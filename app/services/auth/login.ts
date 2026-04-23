@@ -38,6 +38,7 @@ export const loginUsuario = async (
     .from('usuarios')
     .select(`
       c_usua,
+      c_instanceId,
       l_nom,
       l_apellp,
       l_apellm,
@@ -52,21 +53,31 @@ export const loginUsuario = async (
     .eq('c_usua', userId)
     .single()
 
-  if (!perfil) throw new Error('Error obteniendo perfil')
+  if (!perfil) throw new Error('Error obteniendo perfil', errPerfil)
 
+
+  //Cambia el Id usuario a instancia 
+  const userIdNuevo = perfil.c_instanceId
 
   const rol = (perfil as any).rol?.l_rol
 
   if (!rol) throw new Error('Rol no encontrado')
 
+  console.log(typeof userIdNuevo)
   // 4. Validar tipo (Docente/Alumno)
   if(rol == "Docente") {
-    const {data: docente} = await $supabase
+    /* const {data: docente} = await $supabase
       .schema('core')
       .from('docente')
       .select('c_usua')
-      .eq('c_usua', userId)
-      .single()
+      .eq('c_usua', userIdNuevo)
+      .single() */
+
+    const { data:docente, error } = await $supabase
+      .schema('core')
+      .from('docente')
+      .select('*')
+      .eq('c_usua', userIdNuevo)
 
     if (!docente) throw new Error('No registrado como docente')
   }
@@ -75,8 +86,8 @@ export const loginUsuario = async (
     const {data: alumno} = await $supabase
       .schema('core')
       .from('alumno')
-      .select('c_usua')
-      .eq('c_usua', userId)
+      .select('*')
+      .eq('c_usua', userIdNuevo)
       .single()
 
     if (!alumno) throw new Error('No registrado como alumno')

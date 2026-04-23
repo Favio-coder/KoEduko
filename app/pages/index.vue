@@ -40,6 +40,13 @@
           </option>
         </select>
 
+        <div class="text-center mt-2">
+          <NuxtLink to="/register" class="text-sm text-[#264e49] hover:text-green-600">
+            No tienes cuenta, registrate aquí
+          </NuxtLink>
+        </div>
+
+
         <!-- Arrow -->
         <!-- <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
           ▼
@@ -62,7 +69,7 @@ const {instituciones, fetchInstituciones} = appListInsEdu()
 
 //Mounted 
 onMounted(() => {
-  fetchInstituciones()
+  fetchInstituciones() //LLama a las instituciones
 })
 
 
