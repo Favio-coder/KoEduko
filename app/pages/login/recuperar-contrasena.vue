@@ -82,7 +82,7 @@ const { $swal } = useNuxtApp()
 const countdown = ref(0)
 const correoEnviado = ref(false)
 let timer: any = null
-
+const config = useRuntimeConfig()
 //Data
 const showPassword = ref(false)
 const loading = ref(false)
@@ -129,7 +129,7 @@ async function handleResetPassword() {
     const { error } = await $supabase.auth.resetPasswordForEmail(
       form.email,
       {
-        redirectTo: 'http://localhost:3000/login/reset-contrasena'
+        redirectTo: `${config.public.baseUrl}/login/reset-contrasena`
       }
     )
 

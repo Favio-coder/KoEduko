@@ -27,9 +27,6 @@ export const loginUsuario = async (
     .eq('c_ie', codInstitucion)
     .single() 
 
-  console.log("Depuración: ")
-  console.log(userId)
-  console.log(codInstitucion)
   
   if(!validacion) {
     throw new Error('!No perteneces a esta institución!')
@@ -57,7 +54,6 @@ export const loginUsuario = async (
 
   if (!perfil) throw new Error('Error obteniendo perfil')
 
-  console.log(perfil)
 
   const rol = (perfil as any).rol?.l_rol
 

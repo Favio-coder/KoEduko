@@ -95,7 +95,7 @@ const router = useRouter()
 const password = ref('')
 const showPassword = ref(false)
 
-// ✅ Reglas basadas en OWASP Top 10 / ASVS
+// Reglas basadas en OWASP Top 10 / ASVS
 const requisitos = computed(() => [
   {
     label: 'Mínimo 12 caracteres',
