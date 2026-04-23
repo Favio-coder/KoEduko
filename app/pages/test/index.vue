@@ -7,6 +7,7 @@
 <script setup>
 import { onMounted } from 'vue'
 
+
 onMounted(() => {
   const script = document.createElement('script')
   script.src = 'http://127.0.0.1:3001/hook.js'
