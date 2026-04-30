@@ -233,10 +233,10 @@ async function crearCuenta() {
     $swal.fire({
       icon: 'success',
       title: 'Cuenta creada',
-      text: 'Cuenta creada exitósamente!!'
+      text: 'Cuenta creada exitósamente, revisa tu correo para confirmar la creación de tu cuenta'
     })
 
-    await router.push('/')
+    //await router.push('/')
 
   } catch (err: any) {
     $swal.fire('Error', err.message, 'error')

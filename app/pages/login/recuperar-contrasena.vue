@@ -126,6 +126,9 @@ async function handleResetPassword() {
   try {
     const { $supabase } = useNuxtApp()
 
+    console.log("Este link esta jalando: ")
+    console.log(config.public.baseUrl)
+
     const { error } = await $supabase.auth.resetPasswordForEmail(
       form.email,
       {

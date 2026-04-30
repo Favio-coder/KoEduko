@@ -279,10 +279,10 @@ definePageMeta({
 const authStore = useAuthStore()
 const aulaStore  = useAulaStore()
 
-// ── Rol ───────────────────────────────────────────────────────────────────────
+// Rol 
 const esDocente = computed(() => authStore.perfil?.rol?.l_rol === 'Docente')
 
-// ── Composable Docente ────────────────────────────────────────────────────────
+// Composable Docente 
 const {
   gradosAulas,
   gradoActual,
@@ -295,19 +295,19 @@ const {
   seleccionarAula,
 } = useGradosAulas()
 
-// ── Composable Alumno ─────────────────────────────────────────────────────────
+// Composable Alumno 
 const {
   loading: loadingAlumno,
   error:   errorAlumno,
   cargarAulaAlumno,
 } = useAulaAlumno()
 
-// ── Avatar ────────────────────────────────────────────────────────────────────
+// Avatar 
 const inicialNombre = computed(() =>
   authStore.user?.nombre?.charAt(0).toUpperCase() ?? '?'
 )
 
-// ── Opciones docente ──────────────────────────────────────────────────────────
+// Opciones docente 
 const tieneOpciones = computed((): boolean => {
   const lista = gradosAulas.value
   if (lista.length > 1) return true
@@ -333,7 +333,7 @@ function resetearSeleccion(): void {
   }
 }
 
-// ── Carga según rol ───────────────────────────────────────────────────────────
+//  Carga según rol 
 onMounted(() => {
   if (esDocente.value) {
     cargarGradosAulas()
