@@ -46,7 +46,12 @@
           </NuxtLink>
         </div>
 
-
+        <!-- <input
+          v-model="comentario"
+          type="text"
+          placeholder="Escribe un comentario (prueba XSS aquí)"
+          class="w-full bg-gray-100 text-gray-700 text-sm rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+        /> -->
         <!-- Arrow -->
         <!-- <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
           ▼
@@ -60,7 +65,7 @@
 <script setup lang="ts">
 import { appListInsEdu } from '~/composable/institucionesEducativas/appListInsEdu'
 
-
+const comentario = ref('')
 const router = useRouter()
 
 //Data

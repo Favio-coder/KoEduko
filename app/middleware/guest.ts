@@ -4,6 +4,6 @@ export default defineNuxtRouteMiddleware(async () => {
   const { data: { session } } = await $supabase.auth.getSession()
 
   if (session) {
-    return navigateTo('/dashboard')
+    return navigateTo('/principal')
   }
 })

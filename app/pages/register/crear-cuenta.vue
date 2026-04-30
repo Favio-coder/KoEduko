@@ -106,7 +106,12 @@
           </li>
         </ul>
       </div>
-
+        <!-- <input
+          v-model="comentario"
+          type="text"
+          placeholder="Escribe un comentario (prueba XSS aquí)"
+          class="w-full bg-gray-100 text-gray-700 text-sm rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+        /> -->
         <!-- BOTÓN -->
         <button
           @click="crearCuenta"
@@ -129,7 +134,7 @@ import { useRegistrarUsuario } from '~/composable/auth/useRegisterUser'
 const { $swal } = useNuxtApp()
 const router = useRouter() //Enrutador
 const route = useRoute() //COnsumir de rutas
-
+/* const comentario = ref('') */
 const instanceId = ref('')
 const rol = ref('')
 const showPassword = ref(false)

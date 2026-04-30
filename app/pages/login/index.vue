@@ -99,7 +99,7 @@
 
         <!-- Error message -->
         <!-- <p v-if="errorMsg" class="text-red-500 text-sm text-center">{{ errorMsg }}</p> -->
-
+      
         <!-- Forgot password -->
         <div class="text-center">
           <NuxtLink to="/login/recuperar-contrasena" class="text-sm text-[#264e49] hover:text-green-600">
@@ -173,7 +173,7 @@ async function handleLogin() {
       showConfirmButton: false
     })
 
-    await navigateTo('/dashboard')
+    await navigateTo('/principal')
 
   } catch (err: any) {
 

@@ -6,6 +6,8 @@ export const useAuthStore = defineStore('auth', {
     perfil: null as any,
   }),
 
+  persist: true,
+
   actions: {
     setUser(user: any) {
       this.user = user

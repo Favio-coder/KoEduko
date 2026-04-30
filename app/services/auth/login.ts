@@ -59,19 +59,14 @@ export const loginUsuario = async (
   //Cambia el Id usuario a instancia 
   const userIdNuevo = perfil.c_instanceId
 
+  console.log(userIdNuevo)
+
   const rol = (perfil as any).rol?.l_rol
 
   if (!rol) throw new Error('Rol no encontrado')
 
-  console.log(typeof userIdNuevo)
   // 4. Validar tipo (Docente/Alumno)
   if(rol == "Docente") {
-    /* const {data: docente} = await $supabase
-      .schema('core')
-      .from('docente')
-      .select('c_usua')
-      .eq('c_usua', userIdNuevo)
-      .single() */
 
     const { data:docente, error } = await $supabase
       .schema('core')
@@ -88,7 +83,6 @@ export const loginUsuario = async (
       .from('alumno')
       .select('*')
       .eq('c_usua', userIdNuevo)
-      .single()
 
     if (!alumno) throw new Error('No registrado como alumno')
   }

@@ -33,7 +33,6 @@ export const useAuth = () => {
       id: perfil.c_usua,
       nombre: `${perfil.l_nom} ${perfil.l_apellp}`,
       rol: (perfil.rol as any)?.l_rol,
-      institucion: (perfil.instieducativo as any)?.[0]?.l_col  
     })
   }
 
