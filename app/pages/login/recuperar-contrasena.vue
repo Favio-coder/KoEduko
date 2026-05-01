@@ -128,11 +128,15 @@ async function handleResetPassword() {
 
     console.log("Este link esta jalando: ")
     console.log(config.public.baseUrl)
+    // "https://ko-eduko.vercel.app/login/reset-contrasena"
+
+    const url = "https://ko-eduko.vercel.app/login/reset-contrasena"
 
     const { error } = await $supabase.auth.resetPasswordForEmail(
       form.email,
       {
-        redirectTo: `${config.public.baseUrl}/login/reset-contrasena`
+        //redirectTo: `${config.public.baseUrl}/login/reset-contrasena`
+        redirectTo: url
       }
     )
 
