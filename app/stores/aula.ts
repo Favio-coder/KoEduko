@@ -23,7 +23,7 @@ export const useAulaStore = defineStore('aula', {
     loading: false,
     error: null,
   }),
- 
+  persist: true,
   getters: {
     aulasDelGrado: (state): AulaSeleccionada[] =>
       state.gradoActual?.aulas ?? [],

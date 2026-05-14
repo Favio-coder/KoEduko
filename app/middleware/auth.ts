@@ -1,23 +1,32 @@
 export default defineNuxtRouteMiddleware(async () => {
-  
+
   if (process.server) return
-  
+
   const { $supabase } = useNuxtApp()
+
   const authStore = useAuthStore()
 
-  const { data: { user } } = await $supabase.auth.getUser()
+  const { data, error } = await $supabase.auth.getSession()
 
-  if (!user) {
-    console.log('❌ No hay sesión, redirigiendo...')
+  const session = data.session
+
+  if (!session) {
+
+    console.log('❌ No hay sesión')
+
     authStore.clearSession()
+
     return navigateTo('/')
+
   }
 
+  console.log('✅ Sesión válida')
 
-  console.log('✅ Usuario válido')
-  // Si hay sesión pero no perfil → recargarlo
-  /* if (!authStore.perfil) {
-    // aquí podrías volver a llamar a tu API
-    alert("Se vencio la sesión")
-  } */
+  // Restaurar user si Pinia se vació
+  if (!authStore.user) {
+
+    authStore.setUser(session.user)
+
+  }
+
 })

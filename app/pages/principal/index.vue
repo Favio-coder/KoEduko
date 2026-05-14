@@ -168,8 +168,7 @@
           >
             <CheckCircleIcon class="w-5 h-5 text-emerald-500 shrink-0" />
             <div>
-              <p class="text-sm font-semibold text-emerald-700">Contexto activo</p>
-              <p class="text-xs text-emerald-600">{{ aulaStore.contextoActual }}</p>
+              <h1 class="text-xs font-bold text-emerald-600">{{ aulaStore.contextoActual }}</h1>
             </div>
             <button
               v-if="tieneOpciones"
@@ -183,9 +182,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════
-         ALUMNO: Tarjeta de aula asignada (solo lectura)
-    ══════════════════════════════════════════════════════════════ -->
+
     <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 
       <div class="flex items-center gap-3 mb-5">

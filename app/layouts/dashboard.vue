@@ -39,17 +39,17 @@
 
         <!-- Sesiones -->
         <NuxtLink
-          to="/sesiones"
+          to="/curso"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
-            isActive('/sesiones')
+            isActive('/curso')
               ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
               : 'text-white/70 hover:bg-white/8 hover:text-white'
           ]"
         >
-          <span v-if="isActive('/sesiones')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
-          <CalendarDaysIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
-          <span>Sesiones</span>
+          <span v-if="isActive('/curso')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <BookOpenIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>Curso</span>
           <!-- Sesiones activas badge -->
           <!-- <span
             v-if="sesionesActivas > 0"
@@ -331,6 +331,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import { useAulaStore } from '#imports'
+import { useCursoStore } from '#imports'
+
 import {
   VideoCameraIcon,
   BookOpenIcon,
@@ -352,7 +355,11 @@ import {
 const { $supabase } = useNuxtApp()
 const router = useRouter()
 const route = useRoute()
+
+//Manejo de Store
 const authStore = useAuthStore()
+const aulaStore = useAulaStore()
+const cursoStore = useCursoStore()
 
 // ── computed ──────────────────────────────
 const esDocente = computed(() => authStore.user?.rol === 'Docente')
@@ -377,7 +384,11 @@ const isActive = (path: string) => route.path === path
 async function logout() {
   showUserMenu.value = false
   await $supabase.auth.signOut()
-  authStore.clearSession()
+
+  authStore.$reset()
+  aulaStore.$reset()
+  cursoStore.$reset()
+  
   router.push('/')
 }
 

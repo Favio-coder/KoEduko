@@ -13,7 +13,7 @@
             <p>{{ s.nombre }}</p>
 
             <NuxtLink
-                :to="`/sesiones/${s.id}`"
+                :to="`/salas/${s.id}`"
                 class="text-blue-500"
             >
                 Entrar

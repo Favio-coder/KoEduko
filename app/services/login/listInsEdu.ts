@@ -8,7 +8,6 @@ export const listInstitucionesEdu = async (supabase: any) => {
         .select('c_ie, l_col')
 
     if (error) {
-        console.error("Error obteniendo instituciones: ", error)
         throw error
     }
 
