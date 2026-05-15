@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen font-sans bg-[#f0f4f3]">
+  <div class="flex h-screen overflow-hidden bg-gray-50">
 
     <aside
       class="w-64 shrink-0 flex flex-col"
@@ -108,7 +108,7 @@
           <span v-if="isActive('/emparejamiento')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <BoltIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Emparejamiento</span>
-          <span class="ml-auto text-[10px] bg-green-400/20 text-green-300 px-2 py-0.5 rounded-full font-semibold">IA</span>
+          <span class="ml-auto text-[10px] bg-green-400/20 text-green-300 px-2 py-0.5 rounded-full font-semibold">Beta</span>
         </NuxtLink>
 
         <!-- Principal -->
@@ -134,9 +134,9 @@
         <div class="border-t border-white/10 mb-3"></div>
 
         <!-- Mini user card -->
-        <div class="flex items-center gap-3 px-3 py-2">
+        <!-- <div class="flex items-center gap-3 px-3 py-2">
           <div
-            class="w-8 h-8 rounded-full bg-linear-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white text-sm font-bold shrink-0 shadow"
+            class="w-8 h-8 rounded-full bg-linear-to-br bg-[#2f4f4f] flex items-center justify-center text-white text-sm font-bold shrink-0 shadow"
           >
             {{ inicialNombre }}
           </div>
@@ -144,7 +144,7 @@
             <p class="text-white text-xs font-semibold truncate">{{ authStore.user?.nombre ?? 'Usuario' }}</p>
             <p class="text-white/40 text-[10px] capitalize truncate">{{ authStore.user?.rol ?? 'Rol' }}</p>
           </div>
-        </div>
+        </div> -->
 
         <!-- Logout -->
         <button
@@ -270,7 +270,7 @@
               @click="toggleUserMenu"
               class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all duration-150 group"
             >
-              <div class="w-8 h-8 rounded-full bg-linear-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white text-sm font-bold shadow">
+              <div class="w-8 h-8 rounded-full bg-linear-to-br bg-[#2f4f4f] flex items-center justify-center text-white text-sm font-bold shadow">
                 {{ inicialNombre }}
               </div>
               <div class="hidden sm:block text-left">
@@ -334,6 +334,8 @@ import { useAuthStore } from '~/stores/auth'
 import { useAulaStore } from '#imports'
 import { useCursoStore } from '#imports'
 
+
+
 import {
   VideoCameraIcon,
   BookOpenIcon,
@@ -373,6 +375,7 @@ const pageTitle = computed(() => {
     '/emparejamiento': 'Emparejamiento Inteligente',
     '/sesiones': 'Sesiones',
     '/salas': 'Salas de reuniones (Ko Eduko Room)',
+    '/curso': 'Cursos y sesiones',
   }
   return map[route.path] ?? 'Ko Eduko'
 })

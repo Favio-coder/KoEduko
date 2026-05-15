@@ -195,12 +195,19 @@ import {
   PencilIcon
 } from '@heroicons/vue/24/outline'
 import { useListCursos } from '~/composable/curso/useListCursos'
+import { useElimCurso } from '~/composable/curso/useElimCurso'
+
+import { withLoading } from '~/utils/withLoading'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
+
+const {$swal} = useNuxtApp()
+
 
 const aulaStore         = useAulaStore()
 const cursoStore        = useCursoStore()
 const { listCursos }    = useListCursos()
+const { elimCurso } = useElimCurso()
 
 // computed de solo lectura para la template; las mutaciones van por acciones del store
 const cursos            = computed(() => cursoStore.cursos)
@@ -233,8 +240,8 @@ function toggleCurso(id: string) {
 
 function onCursoCreado(curso: Curso) {
   // usar acción del store en lugar de mutar el computed
-  cursoStore.addCurso(curso)
-  cursosAbiertos.value.add(curso.c_curso)
+  //cursoStore.addCurso(curso)
+  //cursosAbiertos.value.add(curso.c_curso)
 }
 
 function onSesionCreada(sesion: Sesion) {
@@ -253,10 +260,49 @@ function eliminarSesion(cursoId: string, sesionId: string) {
   if (curso) curso.sesiones = curso.sesiones.filter(s => s.id !== sesionId)
 }
 
-function eliminarCurso(cursoId: string) {
-  // usar acción del store en lugar de mutar el computed
-  cursoStore.removeCurso(cursoId)
-  cursosAbiertos.value.delete(cursoId)
+async function eliminarCurso(cursoId: string) {
+
+  const confirmacion = await $swal.fire({
+    title: '¿Eliminar curso?',
+    text: 'Esta acción eliminará el curso y no se podrá recuperar.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#9ca3af',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+  })
+
+  if (!confirmacion.isConfirmed) return
+
+  try {
+
+    await withLoading(() =>
+      elimCurso(cursoId)
+    )
+
+    cursosAbiertos.value.delete(cursoId)
+
+    await $swal.fire({
+      title: 'Curso eliminado',
+      text: 'El curso fue eliminado correctamente.',
+      icon: 'success',
+      timer: 1500,
+      showConfirmButton: false
+    })
+
+  } catch (error: any) {
+
+    console.error("No se eliminó el curso:", error)
+
+    await $swal.fire({
+      title: 'Error',
+      text: error.message || 'No se pudo eliminar el curso',
+      icon: 'error'
+    })
+
+  }
 }
 
 // ── Watch ─────────────────────────────────────────────────────────────────────
@@ -271,7 +317,7 @@ watch(showModalCurso, (val) => {
 onMounted(async () => {
   if (cursoStore.cursos.length === 0) {
     try {
-      await listCursos()
+      await withLoading(() => listCursos())
     } catch (error) {
       console.error('Error al cargar cursos:', error)
     }

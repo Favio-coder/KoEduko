@@ -1,28 +1,25 @@
 <template>
   <div class="space-y-6">
 
-    <!-- ══════════════════════════════════════════════════════════════
-         BIENVENIDA
-    ══════════════════════════════════════════════════════════════ -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-5">
-      <div class="w-16 h-16 rounded-2xl bg-linear-to-br from-green-400 to-emerald-700 flex items-center justify-center text-white text-2xl font-bold shadow-lg shrink-0">
+
+    <!-- Tarjeta de bienvenida -->
+    <div class="bg-white rounded-2xl shadow p-6 flex items-center gap-4">
+      
+      <!-- Avatar con inicial -->
+      <div class="w-16 h-16 rounded-full bg-[#2f4f4f] flex items-center justify-center text-white text-2xl font-bold">
         {{ inicialNombre }}
       </div>
-      <div class="min-w-0">
-        <h1 class="text-xl font-bold text-gray-800 leading-tight truncate">
-          Bienvenido, {{ authStore.perfil?.l_nom }} 👋
+
+      <!-- Info -->
+      <div>
+        <h1 class="text-2xl font-bold text-[#264e49]">
+          Bienvenido, {{ authStore.user?.nombre }} 👋
         </h1>
-        <p class="text-sm text-gray-400 mt-0.5">{{ authStore.perfil?.instieducativo?.l_col }}</p>
-        <div v-if="aulaStore.seleccionCompleta" class="flex items-center gap-2 mt-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-          <span class="text-xs font-semibold text-emerald-600">{{ aulaStore.contextoActual }}</span>
-        </div>
+        <p class="text-sm text-gray-500">{{ authStore.perfil?.instieducativo?.l_col }}</p>
       </div>
+
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════
-         TARJETAS RESUMEN
-    ══════════════════════════════════════════════════════════════ -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Nombre completo</p>
