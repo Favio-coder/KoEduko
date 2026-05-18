@@ -34,7 +34,10 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
-      baseUrl: process.env.NUXT_PUBLIC_BASE_URL
+      baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
+      googleid: process.env.GOOGLE_CLIENT_ID,
+      googlesecret: process.env.GOOGLE_CLIENT_SECRET,
+      googleredurl: process.env.GOOGLE_REDIRECT_URI
     }
   }
 });
