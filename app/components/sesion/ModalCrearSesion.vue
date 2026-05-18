@@ -14,7 +14,6 @@
         @click.self="cerrar"
       >
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-
         <Transition
           enter-active-class="transition duration-200 ease-out"
           enter-from-class="opacity-0 scale-95 translate-y-2"
@@ -34,11 +33,9 @@
                   <h2 class="text-sm font-bold text-gray-800">
                     {{ esEdicion ? 'Editar sesión' : 'Nueva sesión' }}
                   </h2>
-                  <p class="text-[10px] text-gray-400 truncate max-w-52">{{ curso?.nombre }}</p>
+                  <p class="text-[10px] text-gray-400 truncate max-w-52">{{ curso?.l_curso }}</p>
                 </div>
               </div>
-
-              <!-- Indicador de edición -->
               <div class="flex items-center gap-2">
                 <span
                   v-if="esEdicion"
@@ -56,7 +53,7 @@
               </div>
             </div>
 
-            <!-- ── Tabs internas ── -->
+            <!-- ── Tabs ── -->
             <div class="flex border-b border-gray-100 px-6">
               <button
                 v-for="tab in TABS_MODAL"
@@ -71,7 +68,6 @@
               >
                 <component :is="tab.icon" class="w-3.5 h-3.5" />
                 {{ tab.label }}
-                <!-- Badge contador archivos -->
                 <span
                   v-if="tab.id === 'archivos' && archivosLocales.length > 0"
                   :class="['text-[9px] font-bold px-1.5 py-0.5 rounded-full', colorBadgeBg]"
@@ -81,12 +77,20 @@
               </button>
             </div>
 
-            <!-- ── Body: scrollable ── -->
+            <!-- ── Error global ── -->
+            <div
+              v-if="errorGuardar"
+              class="mx-6 mt-4 flex items-center gap-2 px-3.5 py-2.5 bg-red-50 border border-red-200 rounded-xl"
+            >
+              <ExclamationCircleIcon class="w-4 h-4 text-red-400 shrink-0" />
+              <p class="text-xs text-red-600">{{ errorGuardar }}</p>
+            </div>
+
+            <!-- ── Body ── -->
             <div class="max-h-[60vh] overflow-y-auto">
 
               <!-- Tab General -->
               <div v-if="tabModal === 'general'" class="px-6 py-5 space-y-4">
-
                 <!-- Título -->
                 <div>
                   <label class="block text-xs font-semibold text-gray-600 mb-1.5">
@@ -139,26 +143,10 @@
                     />
                   </div>
                 </div>
-
-                <!-- Materiales (texto) -->
-                <div>
-                  <label class="flex items-center gap-2 text-xs font-semibold text-gray-600 mb-1.5">
-                    <ClipboardDocumentListIcon class="w-3.5 h-3.5 text-gray-400" />
-                    Notas / materiales a tratar
-                    <span class="text-gray-300 font-normal">(opcional)</span>
-                  </label>
-                  <textarea
-                    v-model="form.materiales"
-                    placeholder="Ej: Repasar cap. 3, traer calculadora…"
-                    rows="2"
-                    class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-gray-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none transition placeholder:text-gray-300 resize-none"
-                  />
-                </div>
               </div>
 
               <!-- Tab Archivos -->
               <div v-else-if="tabModal === 'archivos'" class="px-6 py-5 space-y-4">
-
                 <!-- Dropzone -->
                 <div
                   :class="[
@@ -200,22 +188,22 @@
                       <p class="text-xs font-semibold text-gray-700 truncate">{{ arch.nombre }}</p>
                       <div class="flex items-center gap-2 mt-0.5">
                         <span class="text-[10px] text-gray-400">{{ formatSize(arch.tamano) }}</span>
-                        <span v-if="arch.cargando" class="text-[10px] text-emerald-500 flex items-center gap-1">
+                        <!-- Subiendo durante el submit -->
+                        <span v-if="loading" class="text-[10px] text-emerald-500 flex items-center gap-1">
                           <ArrowPathIcon class="w-2.5 h-2.5 animate-spin" />
-                          {{ arch.progreso }}%
+                          Subiendo…
                         </span>
                         <span v-else class="text-[10px] font-bold uppercase text-gray-300">{{ arch.tipo }}</span>
                       </div>
-                      <div v-if="arch.cargando" class="mt-1 h-0.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          :class="['h-full rounded-full transition-all duration-300', colorDotBg]"
-                          :style="{ width: `${arch.progreso}%` }"
-                        />
+                      <!-- Barra de progreso solo al guardar -->
+                      <div v-if="loading" class="mt-1 h-0.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div :class="['h-full rounded-full animate-pulse', colorDotBg]" style="width: 60%" />
                       </div>
                     </div>
                     <button
+                      :disabled="loading"
                       @click="eliminarArchivoLocal(arch.id)"
-                      class="w-7 h-7 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all"
+                      class="w-7 h-7 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all disabled:pointer-events-none"
                     >
                       <TrashIcon class="w-3.5 h-3.5" />
                     </button>
@@ -227,55 +215,11 @@
                 </p>
               </div>
 
-              <!-- Tab Reunión -->
-              <div v-else-if="tabModal === 'reunion'" class="px-6 py-5 space-y-4">
-                <div>
-                  <label class="flex items-center gap-2 text-xs font-semibold text-gray-600 mb-1.5">
-                    <VideoCameraIcon class="w-3.5 h-3.5 text-gray-400" />
-                    Link de reunión
-                    <span class="text-gray-300 font-normal">(opcional)</span>
-                  </label>
-                  <div class="relative">
-                    <input
-                      v-model="form.linkReunion"
-                      type="url"
-                      placeholder="https://meet.google.com/xxx-xxxx-xxx"
-                      class="w-full pl-3.5 pr-20 py-2.5 text-sm rounded-xl border border-gray-200 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none transition placeholder:text-gray-300"
-                      :class="{ 'border-red-300 ring-2 ring-red-100': errores.linkReunion }"
-                    />
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2">
-                      <span v-if="plataformaReunion === 'meet'"  class="text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">Meet</span>
-                      <span v-else-if="plataformaReunion === 'zoom'"  class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Zoom</span>
-                      <span v-else-if="plataformaReunion === 'teams'" class="text-[10px] font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">Teams</span>
-                      <LinkIcon v-else-if="form.linkReunion" class="w-3.5 h-3.5 text-gray-300" />
-                    </div>
-                  </div>
-                  <p v-if="errores.linkReunion" class="text-[10px] text-red-400 mt-1">{{ errores.linkReunion }}</p>
-                </div>
-
-                <!-- Sugerencia del curso -->
-                <div
-                  v-if="curso?.linkReunion && !form.linkReunion"
-                  class="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
-                >
-                  <div>
-                    <p class="text-[10px] font-semibold text-gray-500">Link del curso disponible</p>
-                    <p class="text-xs text-gray-700 truncate max-w-xs">{{ curso.linkReunion }}</p>
-                  </div>
-                  <button
-                    @click="form.linkReunion = curso!.linkReunion!"
-                    :class="['text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition', colorBotonBg]"
-                  >
-                    Usar
-                  </button>
-                </div>
-              </div>
             </div>
 
             <!-- ── Footer ── -->
             <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-gray-100">
               <div class="flex items-center gap-2">
-                <!-- Indicador de cambios -->
                 <span v-if="esEdicion && haycambios" class="flex items-center gap-1 text-[10px] text-amber-500">
                   <div class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   Cambios sin guardar
@@ -284,7 +228,8 @@
               <div class="flex items-center gap-2">
                 <button
                   @click="cerrar"
-                  class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition font-medium"
+                  :disabled="loading"
+                  class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition font-medium disabled:opacity-50"
                 >
                   Cancelar
                 </button>
@@ -302,6 +247,7 @@
                 </button>
               </div>
             </div>
+
           </div>
         </Transition>
       </div>
@@ -312,68 +258,73 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue'
 import {
-  CalendarDaysIcon, XMarkIcon, ArrowPathIcon, ClipboardDocumentListIcon,
-  VideoCameraIcon, LinkIcon, PencilIcon, ArrowUpTrayIcon, TrashIcon,
+  CalendarDaysIcon, XMarkIcon, ArrowPathIcon,
+  PencilIcon, ArrowUpTrayIcon, TrashIcon,
   DocumentIcon, DocumentTextIcon, PresentationChartBarIcon, TableCellsIcon,
-  PhotoIcon, FilmIcon, ArchiveBoxIcon, CheckIcon,
+  PhotoIcon, FilmIcon, ArchiveBoxIcon, CheckIcon, ExclamationCircleIcon,
 } from '@heroicons/vue/24/outline'
-import type { Sesion } from '~/types/sesion'
-import type { Curso } from '~/types/curso'
 
-// ── Tipos ──────────────────────────────────────────────────────────────────────
-type TipoArchivo = 'pdf' | 'pptx' | 'docx' | 'xlsx' | 'imagen' | 'video' | 'zip' | 'otro'
+import type { Sesion }          from '~/types/sesion'
+import type { Curso }           from '~/types/curso'
+import type { TipoArchivo }     from '~/types/archivo'
+import type { CrearSesionDTO }  from '~/types/sesionDTO'
 
+// ── Composable ────────────────────────────────────────────────────────────────
+import { useGrabSesion } from '~/composable/sesion/useGrabSesion'
+
+const { grabarSesion, loading, error: errorComposable } = useGrabSesion()
+
+// ── Tipos locales ─────────────────────────────────────────────────────────────
+/**
+ * Extiende ArchivoUpload con campos de UI (id, nombre, tamano)
+ * y guarda la referencia al File real para subirlo al guardar.
+ */
 interface ArchivoLocal {
-  id:       string
-  nombre:   string
-  tipo:     TipoArchivo
-  tamano:   number
-  cargando: boolean
-  progreso: number
-  url?:     string
+  id:      string
+  nombre:  string
+  tipo:    TipoArchivo
+  tamano:  number
+  file:    File          // referencia real para el upload
 }
 
-type TabModal = 'general' | 'archivos' | 'reunion'
+type TabModal = 'general' | 'archivos'
 
 // ── Props & emits ──────────────────────────────────────────────────────────────
 const props = defineProps<{
   modelValue: boolean
   curso:      Curso | null
-  sesion?:    Sesion | null        // si se pasa → modo edición
+  sesion?:    Sesion | null
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void
-  (e: 'created',  sesion: Sesion): void
-  (e: 'updated',  sesion: Sesion): void
+  (e: 'created', sesion: Sesion): void
+  (e: 'updated', sesion: Sesion): void
 }>()
 
 // ── Estado ────────────────────────────────────────────────────────────────────
-const loading       = ref(false)
-const dropActivo    = ref(false)
-const tabModal      = ref<TabModal>('general')
-const fileInputRef  = ref<HTMLInputElement | null>(null)
+const dropActivo      = ref(false)
+const tabModal        = ref<TabModal>('general')
+const fileInputRef    = ref<HTMLInputElement | null>(null)
 const archivosLocales = ref<ArchivoLocal[]>([])
+const errorGuardar    = ref<string | null>(null)
 
 const TABS_MODAL: { id: TabModal; label: string; icon: any }[] = [
-  { id: 'general',  label: 'General',   icon: CalendarDaysIcon },
-  { id: 'archivos', label: 'Archivos',  icon: DocumentIcon },
-  { id: 'reunion',  label: 'Reunión',   icon: VideoCameraIcon },
+  { id: 'general',  label: 'General',  icon: CalendarDaysIcon },
+  { id: 'archivos', label: 'Archivos', icon: DocumentIcon },
 ]
 
 const form = reactive({
-  titulo:       '',
-  descripcion:  '',
-  fecha:        '',
-  hora:         '',
-  materiales:   '',
-  linkReunion:  '',
+  titulo:      '',
+  descripcion: '',
+  fecha:       '',
+  hora:        '',
+  linkReunion: '',
 })
 
 const errores = reactive({
-  titulo:      '',
-  fecha:       '',
-  linkReunion: '',
+  titulo: '',
+  fecha:  '',
 })
 
 // ── Computed ───────────────────────────────────────────────────────────────────
@@ -382,173 +333,171 @@ const esEdicion = computed(() => !!props.sesion)
 const haycambios = computed(() => {
   if (!esEdicion.value || !props.sesion) return false
   return (
-    form.titulo       !== (props.sesion.titulo        ?? '') ||
-    form.descripcion  !== (props.sesion.descripcion   ?? '') ||
-    form.fecha        !== (props.sesion.fecha         ?? '') ||
-    form.hora         !== (props.sesion.hora          ?? '') ||
-    form.materiales   !== (props.sesion.materiales    ?? '') ||
-    form.linkReunion  !== (props.sesion.linkReunion   ?? '')
+    form.titulo      !== (props.sesion.l_sesion    ?? '') ||
+    form.descripcion !== (props.sesion.l_desc      ?? '') ||
+    form.fecha       !== (props.sesion.f_Sesion    ?? '') ||
+    form.hora        !== (props.sesion.f_hora      ?? '') ||
+    form.linkReunion !== (props.sesion.linkReunion ?? '')
   )
 })
 
 // ── Color helpers ──────────────────────────────────────────────────────────────
-const colorMap:     Record<string,string> = { emerald:'bg-emerald-500', blue:'bg-blue-500', violet:'bg-violet-500', rose:'bg-rose-500', amber:'bg-amber-500', cyan:'bg-cyan-500', slate:'bg-slate-500' }
-const colorMapLight: Record<string,string> = { emerald:'bg-emerald-50', blue:'bg-blue-50', violet:'bg-violet-50', rose:'bg-rose-50', amber:'bg-amber-50', cyan:'bg-cyan-50', slate:'bg-slate-50' }
-const colorMapText:  Record<string,string> = { emerald:'text-emerald-600', blue:'text-blue-600', violet:'text-violet-600', rose:'text-rose-600', amber:'text-amber-600', cyan:'text-cyan-600', slate:'text-slate-600' }
-const colorMapDot:   Record<string,string> = { emerald:'bg-emerald-500', blue:'bg-blue-500', violet:'bg-violet-500', rose:'bg-rose-500', amber:'bg-amber-500', cyan:'bg-cyan-500', slate:'bg-slate-500' }
-const colorMapBadge: Record<string,string> = { emerald:'bg-emerald-100 text-emerald-700', blue:'bg-blue-100 text-blue-700', violet:'bg-violet-100 text-violet-700', rose:'bg-rose-100 text-rose-700', amber:'bg-amber-100 text-amber-700', cyan:'bg-cyan-100 text-cyan-700', slate:'bg-slate-100 text-slate-700' }
-const colorMapBoton: Record<string,string> = { emerald:'bg-emerald-100 text-emerald-700 hover:bg-emerald-200', blue:'bg-blue-100 text-blue-700 hover:bg-blue-200', violet:'bg-violet-100 text-violet-700 hover:bg-violet-200', rose:'bg-rose-100 text-rose-700 hover:bg-rose-200', amber:'bg-amber-100 text-amber-700 hover:bg-amber-200', cyan:'bg-cyan-100 text-cyan-700 hover:bg-cyan-200', slate:'bg-slate-100 text-slate-700 hover:bg-slate-200' }
-const colorMapBorde: Record<string,string> = { emerald:'border-emerald-400', blue:'border-blue-400', violet:'border-violet-400', rose:'border-rose-400', amber:'border-amber-400', cyan:'border-cyan-400', slate:'border-slate-400' }
+const colorMap:      Record<string, string> = { emerald: 'bg-emerald-500', blue: 'bg-blue-500', violet: 'bg-violet-500', rose: 'bg-rose-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500', slate: 'bg-slate-500' }
+const colorMapLight: Record<string, string> = { emerald: 'bg-emerald-50',  blue: 'bg-blue-50',  violet: 'bg-violet-50',  rose: 'bg-rose-50',  amber: 'bg-amber-50',  cyan: 'bg-cyan-50',  slate: 'bg-slate-50'  }
+const colorMapText:  Record<string, string> = { emerald: 'text-emerald-600', blue: 'text-blue-600', violet: 'text-violet-600', rose: 'text-rose-600', amber: 'text-amber-600', cyan: 'text-cyan-600', slate: 'text-slate-600' }
+const colorMapDot:   Record<string, string> = { emerald: 'bg-emerald-500', blue: 'bg-blue-500', violet: 'bg-violet-500', rose: 'bg-rose-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500', slate: 'bg-slate-500' }
+const colorMapBadge: Record<string, string> = { emerald: 'bg-emerald-100 text-emerald-700', blue: 'bg-blue-100 text-blue-700', violet: 'bg-violet-100 text-violet-700', rose: 'bg-rose-100 text-rose-700', amber: 'bg-amber-100 text-amber-700', cyan: 'bg-cyan-100 text-cyan-700', slate: 'bg-slate-100 text-slate-700' }
+const colorMapBorde: Record<string, string> = { emerald: 'border-emerald-400', blue: 'border-blue-400', violet: 'border-violet-400', rose: 'border-rose-400', amber: 'border-amber-400', cyan: 'border-cyan-400', slate: 'border-slate-400' }
 
-const colorKey  = computed(() => props.curso?.color ?? 'emerald')
+const colorKey    = computed(() => props.curso?.l_color ?? 'emerald')
 const colorBg      = computed(() => colorMap[colorKey.value]      ?? colorMap.emerald)
 const colorBgLight = computed(() => colorMapLight[colorKey.value]  ?? colorMapLight.emerald)
 const colorTextBg  = computed(() => colorMapText[colorKey.value]   ?? colorMapText.emerald)
 const colorDotBg   = computed(() => colorMapDot[colorKey.value]    ?? colorMapDot.emerald)
 const colorBadgeBg = computed(() => colorMapBadge[colorKey.value]  ?? colorMapBadge.emerald)
-const colorBotonBg = computed(() => colorMapBoton[colorKey.value]  ?? colorMapBoton.emerald)
 const colorBordeDrop = computed(() => colorMapBorde[colorKey.value] ?? colorMapBorde.emerald)
 
-// ── Detección de plataforma ───────────────────────────────────────────────────
-const plataformaReunion = computed((): string => {
-  const url = form.linkReunion.toLowerCase()
-  if (url.includes('meet.google')) return 'meet'
-  if (url.includes('zoom.us'))     return 'zoom'
-  if (url.includes('teams.microsoft') || url.includes('teams.live')) return 'teams'
-  return ''
-})
-
-// ── Watchers: pre-fill en edición ─────────────────────────────────────────────
+// ── Watcher: inicializar al abrir ─────────────────────────────────────────────
 watch(() => props.modelValue, (open) => {
-  if (open) {
-    tabModal.value = 'general'
-    archivosLocales.value = props.sesion?.archivos ? [...props.sesion.archivos] : []
+  if (!open) return
+  tabModal.value    = 'general'
+  errorGuardar.value = null
+  archivosLocales.value = []          // en edición los archivos ya están en la nube
 
-    if (props.sesion) {
-      // Modo edición: pre-llenar formulario
-      Object.assign(form, {
-        titulo:      props.sesion.titulo        ?? '',
-        descripcion: props.sesion.descripcion   ?? '',
-        fecha:       props.sesion.fecha         ?? '',
-        hora:        props.sesion.hora          ?? '',
-        materiales:  props.sesion.materiales    ?? '',
-        linkReunion: props.sesion.linkReunion   ?? '',
-      })
-    } else {
-      // Modo creación: limpiar
-      Object.assign(form, { titulo:'', descripcion:'', fecha:'', hora:'', materiales:'', linkReunion:'' })
-    }
-    Object.assign(errores, { titulo:'', fecha:'', linkReunion:'' })
+  if (props.sesion) {
+    Object.assign(form, {
+      titulo:      props.sesion.l_sesion    ?? '',
+      descripcion: props.sesion.l_desc      ?? '',
+      fecha:       props.sesion.f_Sesion    ?? '',
+      hora:        props.sesion.f_hora      ?? '',
+      linkReunion: props.sesion.linkReunion ?? '',
+    })
+  } else {
+    Object.assign(form, { titulo: '', descripcion: '', fecha: '', hora: '', linkReunion: '' })
   }
+
+  Object.assign(errores, { titulo: '', fecha: '' })
 })
 
-// ── Archivos ──────────────────────────────────────────────────────────────────
+// ── Manejo de archivos ────────────────────────────────────────────────────────
 function onFileChange(event: Event) {
   const files = (event.target as HTMLInputElement).files
   if (files) procesarArchivos(Array.from(files))
+  // Reset input para permitir seleccionar el mismo archivo de nuevo
+  if (fileInputRef.value) fileInputRef.value.value = ''
 }
+
 function onDrop(event: DragEvent) {
   dropActivo.value = false
   const files = event.dataTransfer?.files
   if (files) procesarArchivos(Array.from(files))
 }
+
 function procesarArchivos(files: File[]) {
   for (const file of files) {
-    const arch: ArchivoLocal = {
-      id:       crypto.randomUUID(),
-      nombre:   file.name,
-      tipo:     detectarTipo(file.name),
-      tamano:   file.size,
-      cargando: true,
-      progreso: 0,
-    }
-    archivosLocales.value.push(arch)
-    simularSubida(arch.id)
+    // Evitar duplicados por nombre
+    const yaExiste = archivosLocales.value.some(a => a.nombre === file.name)
+    if (yaExiste) continue
+
+    archivosLocales.value.push({
+      id:     crypto.randomUUID(),
+      nombre: file.name,
+      tipo:   detectarTipo(file.name),
+      tamano: file.size,
+      file,                           // ← referencia real al File
+    })
   }
 }
-function simularSubida(id: string) {
-  // TODO: upload real a S3
-  const iv = setInterval(() => {
-    const arch = archivosLocales.value.find(a => a.id === id)
-    if (!arch) { clearInterval(iv); return }
-    arch.progreso = Math.min(arch.progreso + Math.random() * 25, 100)
-    if (arch.progreso >= 100) {
-      arch.progreso = 100
-      arch.cargando = false
-      clearInterval(iv)
-    }
-  }, 300)
-}
+
 function eliminarArchivoLocal(id: string) {
   archivosLocales.value = archivosLocales.value.filter(a => a.id !== id)
 }
+
 function detectarTipo(nombre: string): TipoArchivo {
   const ext = nombre.split('.').pop()?.toLowerCase() ?? ''
-  if (ext === 'pdf')                      return 'pdf'
-  if (['ppt','pptx'].includes(ext))       return 'pptx'
-  if (['doc','docx'].includes(ext))       return 'docx'
-  if (['xls','xlsx'].includes(ext))       return 'xlsx'
-  if (['png','jpg','jpeg','gif','webp'].includes(ext)) return 'imagen'
-  if (['mp4','mov','avi'].includes(ext))  return 'video'
-  if (['zip','rar','7z'].includes(ext))   return 'zip'
+  if (ext === 'pdf')                               return 'pdf'
+  if (['ppt', 'pptx'].includes(ext))              return 'pptx'
+  if (['doc', 'docx'].includes(ext))              return 'docx'
+  if (['xls', 'xlsx'].includes(ext))              return 'xlsx'
+  if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) return 'imagen'
+  if (['mp4', 'mov', 'avi'].includes(ext))        return 'video'
+  if (['zip', 'rar', '7z'].includes(ext))         return 'zip'
   return 'otro'
 }
+
 function iconoArchivo(tipo: string) {
-  const map: Record<string,any> = {
+  const map: Record<string, any> = {
     pdf: DocumentIcon, pptx: PresentationChartBarIcon, docx: DocumentTextIcon,
     xlsx: TableCellsIcon, imagen: PhotoIcon, video: FilmIcon, zip: ArchiveBoxIcon,
   }
   return map[tipo] ?? DocumentIcon
 }
+
 function formatSize(bytes: number): string {
-  if (bytes < 1024)       return `${bytes} B`
-  if (bytes < 1024 ** 2)  return `${(bytes / 1024).toFixed(1)} KB`
+  if (bytes < 1024)      return `${bytes} B`
+  if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`
   return `${(bytes / 1024 ** 2).toFixed(1)} MB`
 }
 
 // ── Validación ────────────────────────────────────────────────────────────────
 function validar(): boolean {
-  errores.titulo = errores.fecha = errores.linkReunion = ''
+  errores.titulo = ''
+  errores.fecha  = ''
   let ok = true
   if (!form.titulo.trim()) { errores.titulo = 'El título es obligatorio'; ok = false }
   if (!form.fecha)          { errores.fecha  = 'La fecha es obligatoria';  ok = false }
-  if (form.linkReunion && !form.linkReunion.startsWith('http')) {
-    errores.linkReunion = 'Debe comenzar con http:// o https://'
-    ok = false
-  }
   return ok
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 async function handleSubmit() {
   if (!validar()) return
-  loading.value = true
-  await new Promise(r => setTimeout(r, 400))
+  errorGuardar.value = null
 
-  const sesionData: Sesion = {
-    id:          props.sesion?.id ?? crypto.randomUUID(),
-    titulo:      form.titulo.trim(),
-    descripcion: form.descripcion.trim()  || null,
-    fecha:       form.fecha,
-    hora:        form.hora                || null,
-    materiales:  form.materiales.trim()   || null,
-    linkReunion: form.linkReunion.trim()  || null,
-    archivos:    archivosLocales.value.filter(a => !a.cargando),
-    creadoEn:    props.sesion?.creadoEn ?? new Date().toISOString(),
-    actualizadoEn: new Date().toISOString(),
+  // Mapear al DTO que espera el composable / service
+  const dto: CrearSesionDTO = {
+    l_sesion: form.titulo.trim(),
+    l_desc:   form.descripcion.trim() || null,
+    f_sesion: form.fecha,
+    f_hora:   form.hora               || null,
+    l_reu:    form.linkReunion.trim() || null,
+    // Cada ArchivoLocal → ArchivoUpload (solo los campos que pide el service)
+    archivos: archivosLocales.value.map(a => ({
+      file:     a.file,
+      tipo:     a.tipo,
+      cargando: false,
+      progreso: 0,
+    })),
   }
 
-  if (esEdicion.value) {
-    emit('updated', sesionData)
-  } else {
-    emit('created', sesionData)
+  try {
+    if (esEdicion.value && props.sesion?.c_sesion) {
+      // TODO: implementar useEditarSesion cuando esté disponible
+      // Por ahora emite 'updated' con los datos locales
+      const sesionActualizada: Sesion = {
+        ...props.sesion,
+        l_sesion:      dto.l_sesion,
+        l_desc:        dto.l_desc,
+        f_Sesion:      dto.f_sesion,
+        f_hora:        dto.f_hora,
+        linkReunion:   dto.l_reu,
+        actualizadoEn: new Date().toISOString(),
+      }
+      emit('updated', sesionActualizada)
+      cerrar()
+    } else {
+      // ── CREACIÓN: llama al composable que maneja store + service + S3 ──
+      const sesionCreada = await grabarSesion(dto)
+      emit('created', sesionCreada)
+      cerrar()
+    }
+  } catch (e: any) {
+    errorGuardar.value = e?.message ?? 'Ocurrió un error al guardar la sesión'
   }
-
-  cerrar()
-  loading.value = false
 }
 
 function cerrar() {
+  if (loading.value) return          // no cerrar mientras sube archivos
   emit('update:modelValue', false)
 }
 </script>

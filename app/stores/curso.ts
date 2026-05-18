@@ -18,7 +18,9 @@ export const useCursoStore = defineStore('curso', {
     getters: {
 
         // Obtener todos los cursos
-        getCursos: (state): Curso[] => state.cursos,
+        getCursos: (state): Curso[] => {
+            return Array.isArray(state.cursos) ? state.cursos : []
+        },
 
         // Obtener curso por id
         getCursoById: (state) => {

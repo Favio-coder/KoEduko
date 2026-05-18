@@ -11,7 +11,7 @@ export function useAulaAlumno() {
   const error = ref<string | null>(null)
  
   async function cargarAulaAlumno() {
-    const c_usua = authStore.user?.id
+    const c_usua = authStore.perfil?.c_instanceId
     if (!c_usua) return
  
     // Si ya está cargado no volvemos a pedir

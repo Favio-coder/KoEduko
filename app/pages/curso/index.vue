@@ -10,6 +10,7 @@
         </p>
       </div>
       <button
+        v-if="esDocente"
         @click="showModalCurso = true"
         class="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150 active:scale-95"
       >
@@ -23,18 +24,27 @@
       v-if="cursos.length === 0"
       class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200"
     >
-      <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
-        <BookOpenIcon class="w-8 h-8 text-emerald-300" />
+      <div v-if="esDocente">
+          <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
+          <BookOpenIcon class="w-8 h-8 text-emerald-300" />
+          </div>
+          <p class="text-gray-600 font-semibold text-sm">Aún no tienes cursos</p>
+          <p class="text-gray-400 text-xs mt-1 mb-5">Crea tu primer curso para comenzar a agregar sesiones</p>
+          <button
+            @click="showModalCurso = true"
+            class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl transition"
+          >
+            <PlusIcon class="w-4 h-4" />
+            Crear primer curso
+          </button>
       </div>
-      <p class="text-gray-600 font-semibold text-sm">Aún no tienes cursos</p>
-      <p class="text-gray-400 text-xs mt-1 mb-5">Crea tu primer curso para comenzar a agregar sesiones</p>
-      <button
-        @click="showModalCurso = true"
-        class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl transition"
-      >
-        <PlusIcon class="w-4 h-4" />
-        Crear primer curso
-      </button>
+      <div v-else>
+          <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
+          <BookOpenIcon class="w-8 h-8 text-emerald-300" />
+          </div>
+          <p class="text-gray-600 font-semibold text-sm">Aún no tienes cursos</p>
+          <p class="text-gray-400 text-xs mt-1 mb-5">Espera que el docente cree el primer curso</p>
+      </div>
     </div>
 
     <!-- LISTA DE CURSOS -->
@@ -82,7 +92,7 @@
           <div v-else class="divide-y divide-gray-50">
             <div
               v-for="sesion in (curso.sesiones ?? [])"
-              :key="sesion.id"
+              :key="sesion.c_sesion"
               class="px-5 py-4 hover:bg-gray-50/60 transition-colors group"
             >
               <div class="flex items-start gap-4">
@@ -90,20 +100,20 @@
                 <!-- Fecha pill -->
                 <div :class="['flex flex-col items-center justify-center w-10 shrink-0 rounded-xl py-1.5', colorFondo(curso.l_color)]">
                   <span :class="['text-[10px] font-bold uppercase', colorText(curso.l_color)]">
-                    {{ mesCorto(sesion.fecha) }}
+                    {{ mesCorto(sesion.f_Sesion) }}
                   </span>
                   <span :class="['text-base font-black leading-tight', colorText(curso.l_color)]">
-                    {{ dia(sesion.fecha) }}
+                    {{ dia(sesion.f_Sesion) }}
                   </span>
                 </div>
 
                 <!-- Info -->
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <p class="text-sm font-semibold text-gray-800">{{ sesion.titulo }}</p>
-                    <span v-if="sesion.hora" class="flex items-center gap-1 text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                    <p class="text-sm font-semibold text-gray-800">{{ sesion.l_sesion }}</p>
+                    <span v-if="sesion.f_hora" class="flex items-center gap-1 text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
                       <ClockIcon class="w-3 h-3" />
-                      {{ sesion.hora }}
+                      {{ sesion.f_hora }}
                     </span>
                     <a
                       v-if="sesion.linkReunion"
@@ -116,18 +126,23 @@
                       {{ plataforma(sesion.linkReunion || '') }}
                     </a>
                   </div>
-                  <p v-if="sesion.descripcion" class="text-xs text-gray-400 mt-0.5 truncate">
-                    {{ sesion.descripcion }}
+                  <p v-if="sesion.l_desc" class="text-xs text-gray-400 mt-0.5 truncate">
+                    {{ sesion.l_desc }}
                   </p>
-                  <div v-if="sesion.materiales" class="flex items-start gap-1.5 mt-1.5">
+                  <div class="flex items-start gap-1.5 mt-1.5">
                     <ClipboardDocumentListIcon class="w-3.5 h-3.5 text-gray-300 shrink-0 mt-0.5" />
-                    <p class="text-xs text-gray-400 line-clamp-2">{{ sesion.materiales }}</p>
+                    <p>Notas!!!</p>
                   </div>
+                  <!-- <div v-if="sesion.materiales" class="flex items-start gap-1.5 mt-1.5">
+                    <ClipboardDocumentListIcon class="w-3.5 h-3.5 text-gray-300 shrink-0 mt-0.5" />
+                    <p class="text-xs text-gray-400 line-clamp-2">{{ sesion.l }}</p>
+                  </div> -->
                 </div>
 
                 <!-- Eliminar (hover) -->
                 <button
-                  @click="eliminarSesion(curso.c_curso, sesion.id)"
+                  v-if="!esDocente"
+                  @click="sesion.c_sesion && eliminarSesion(curso.c_curso, sesion.c_sesion)"
                   class="opacity-0 group-hover:opacity-100 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all shrink-0"
                 >
                   <TrashIcon class="w-3.5 h-3.5" />
@@ -140,6 +155,7 @@
           <div class="flex items-center justify-between px-5 py-3 bg-gray-50/50 border-t border-gray-100">
             <div class="flex items-center gap-1.5">
               <button
+                v-if="esDocente"
                 @click="abrirModalEditar(curso)"
                 class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-green-500 transition"
               >
@@ -147,6 +163,7 @@
                 Editar curso
               </button>
               <button
+                v-if="esDocente"
                 @click="eliminarCurso(curso.c_curso)"
                 class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-400 transition"
               >
@@ -155,6 +172,7 @@
               </button>
             </div>
             <button
+              v-if="esDocente"
               @click="abrirModalSesion(curso)"
               :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition', colorBotonSesion(curso.l_color)]"
             >
@@ -185,8 +203,12 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
+
+//Store
+import { useAuthStore } from '#imports'
 import { useAulaStore } from '~/stores/aula'
 import { useCursoStore } from '#imports'
+
 import type { Sesion } from '~/types/sesion'
 import type { Curso } from '~/types/curso'
 import {
@@ -198,6 +220,15 @@ import { useListCursos } from '~/composable/curso/useListCursos'
 import { useElimCurso } from '~/composable/curso/useElimCurso'
 
 import { withLoading } from '~/utils/withLoading'
+
+
+
+//Computed
+
+const authStore = useAuthStore()
+
+const esDocente = computed(() => authStore.user?.rol === 'Docente')
+
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
@@ -257,7 +288,7 @@ function onCursoActualizado(cursoActualizado: Curso) {
 function eliminarSesion(cursoId: string, sesionId: string) {
   // mutar directamente en el store (Pinia lo permite)
   const curso = cursoStore.cursos.find(c => c.c_curso === cursoId)
-  if (curso) curso.sesiones = curso.sesiones.filter(s => s.id !== sesionId)
+  if (curso) curso.sesiones = curso.sesiones.filter(s => s.c_sesion !== sesionId)
 }
 
 async function eliminarCurso(cursoId: string) {
