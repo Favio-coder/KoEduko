@@ -275,16 +275,13 @@ import { useGrabSesion } from '~/composable/sesion/useGrabSesion'
 const { grabarSesion, loading, error: errorComposable } = useGrabSesion()
 
 // ── Tipos locales ─────────────────────────────────────────────────────────────
-/**
- * Extiende ArchivoUpload con campos de UI (id, nombre, tamano)
- * y guarda la referencia al File real para subirlo al guardar.
- */
+
 interface ArchivoLocal {
   id:      string
   nombre:  string
   tipo:    TipoArchivo
   tamano:  number
-  file:    File          // referencia real para el upload
+  file:    File         
 }
 
 type TabModal = 'general' | 'archivos'
@@ -327,7 +324,7 @@ const errores = reactive({
   fecha:  '',
 })
 
-// ── Computed ───────────────────────────────────────────────────────────────────
+// Computed 
 const esEdicion = computed(() => !!props.sesion)
 
 const haycambios = computed(() => {
@@ -335,7 +332,7 @@ const haycambios = computed(() => {
   return (
     form.titulo      !== (props.sesion.l_sesion    ?? '') ||
     form.descripcion !== (props.sesion.l_desc      ?? '') ||
-    form.fecha       !== (props.sesion.f_Sesion    ?? '') ||
+    form.fecha       !== (props.sesion.f_sesion    ?? '') ||
     form.hora        !== (props.sesion.f_hora      ?? '') ||
     form.linkReunion !== (props.sesion.linkReunion ?? '')
   )
@@ -357,18 +354,18 @@ const colorDotBg   = computed(() => colorMapDot[colorKey.value]    ?? colorMapDo
 const colorBadgeBg = computed(() => colorMapBadge[colorKey.value]  ?? colorMapBadge.emerald)
 const colorBordeDrop = computed(() => colorMapBorde[colorKey.value] ?? colorMapBorde.emerald)
 
-// ── Watcher: inicializar al abrir ─────────────────────────────────────────────
+// Watcher
 watch(() => props.modelValue, (open) => {
   if (!open) return
   tabModal.value    = 'general'
   errorGuardar.value = null
-  archivosLocales.value = []          // en edición los archivos ya están en la nube
+  archivosLocales.value = []          
 
   if (props.sesion) {
     Object.assign(form, {
       titulo:      props.sesion.l_sesion    ?? '',
       descripcion: props.sesion.l_desc      ?? '',
-      fecha:       props.sesion.f_Sesion    ?? '',
+      fecha:       props.sesion.f_sesion    ?? '',
       hora:        props.sesion.f_hora      ?? '',
       linkReunion: props.sesion.linkReunion ?? '',
     })
@@ -472,13 +469,14 @@ async function handleSubmit() {
 
   try {
     if (esEdicion.value && props.sesion?.c_sesion) {
-      // TODO: implementar useEditarSesion cuando esté disponible
-      // Por ahora emite 'updated' con los datos locales
+
+      alert("Esta entrando por aca!!")
+
       const sesionActualizada: Sesion = {
         ...props.sesion,
         l_sesion:      dto.l_sesion,
         l_desc:        dto.l_desc,
-        f_Sesion:      dto.f_sesion,
+        f_sesion:      dto.f_sesion,
         f_hora:        dto.f_hora,
         linkReunion:   dto.l_reu,
         actualizadoEn: new Date().toISOString(),
@@ -486,8 +484,12 @@ async function handleSubmit() {
       emit('updated', sesionActualizada)
       cerrar()
     } else {
-      // ── CREACIÓN: llama al composable que maneja store + service + S3 ──
+      
+      alert("Si esta creando una nueva sesión")
+
       const sesionCreada = await grabarSesion(dto)
+      console.log("Sesion Creada: ")
+      console.log(sesionCreada)
       emit('created', sesionCreada)
       cerrar()
     }

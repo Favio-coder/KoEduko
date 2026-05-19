@@ -32,9 +32,6 @@ export function useListCursos(){
                 $supabase,
                 c_aula
             )
-
-
-            console.log("Cursos para llevar a store: ", cursos)
             
             //Rellenar el store 
             cursoStore.setCursos(cursos)

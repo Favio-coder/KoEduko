@@ -1,7 +1,5 @@
 export default defineNuxtRouteMiddleware(async () => {
 
-  if (process.server) return
-
   const { $supabase } = useNuxtApp()
 
   const authStore = useAuthStore()

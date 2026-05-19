@@ -333,7 +333,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useAulaStore } from '#imports'
 import { useCursoStore } from '#imports'
-
+import { useSesionStore } from '#imports'
 
 
 import {
@@ -362,6 +362,7 @@ const route = useRoute()
 const authStore = useAuthStore()
 const aulaStore = useAulaStore()
 const cursoStore = useCursoStore()
+const sesionStore = useSesionStore()
 
 // ── computed ──────────────────────────────
 const esDocente = computed(() => authStore.user?.rol === 'Docente')
@@ -391,6 +392,7 @@ async function logout() {
   authStore.$reset()
   aulaStore.$reset()
   cursoStore.$reset()
+  sesionStore.$reset()
   
   router.push('/')
 }

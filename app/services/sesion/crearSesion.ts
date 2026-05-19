@@ -94,7 +94,7 @@ export async function grabSesion(
 
     const nombreArchivo = `${Date.now()}-${file.name}`
 
-    const path = `sesiones/${sesionDB.c_sesion}/${nombreArchivo}`
+    const path = `${sesionDB.c_sesion}/${nombreArchivo}`
 
 
     const { error: uploadError } = await supabase

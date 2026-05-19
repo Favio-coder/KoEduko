@@ -59,8 +59,6 @@ export const loginUsuario = async (
   //Cambia el Id usuario a instancia 
   const userIdNuevo = perfil.c_instanceId
 
-  console.log(userIdNuevo)
-
   const rol = (perfil as any).rol?.l_rol
 
   if (!rol) throw new Error('Rol no encontrado')
