@@ -155,7 +155,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import type { Curso, ColorCurso } from '~/types/curso'   
 import { useGrabCurso } from '~/composable/curso/useGrabCurso';
-
+import { useEditCurso } from '~/composable/curso/useEditCurso';
 
 const {$swal} = useNuxtApp()
 
@@ -220,34 +220,52 @@ function validar(): boolean {
 }
 
 async function handleSubmit() {
+
   if (!validar()) return
+
   loading.value = true
+
   await new Promise(r => setTimeout(r, 400))
 
   const cursoData: Curso = {
-    c_curso:          props.curso?.c_curso ?? crypto.randomUUID(),
-    l_curso:      form.nombre.trim(),
+    c_curso: props.curso?.c_curso ?? crypto.randomUUID(),
+    l_curso: form.nombre.trim(),
     l_desc: form.descripcion.trim() || null,
-    l_color:       form.color,
-    sesiones:    props.curso?.sesiones ?? [],
-    f_crea:    props.curso?.f_crea ?? new Date().toISOString(),
+    l_color: form.color,
+    sesiones: props.curso?.sesiones ?? [],
+    f_crea: props.curso?.f_crea ?? new Date().toISOString(),
   }
 
+  try {
 
-  try{
-    const { grabarCurso } = useGrabCurso()
+    if (esEdicion.value) {
 
-    await grabarCurso(cursoData)
-  }catch(err:any){
+      const { editCurso } = useEditCurso()
+
+      const cursoActualizado = await editCurso(cursoData)
+
+      emit('updated', cursoActualizado)
+
+    } else {
+
+      const { grabarCurso } = useGrabCurso()
+
+      const cursoCreado = await grabarCurso(cursoData)
+
+
+      //emit('created', cursoCreado[0])
+    }
+
+    cerrar()
+
+  } catch(err:any) {
+
     $swal.fire("Error", err.message, 'error')
-  }finally{
+
+  } finally {
+
     loading.value = false
   }
-
-  esEdicion.value ? emit('updated', cursoData) : emit('created', cursoData)
-
-  cerrar()
-  loading.value = false
 }
 
 function cerrar() {

@@ -136,7 +136,7 @@
                 <!-- Eliminar (hover, solo docente) -->
                  <button
                   v-if="esDocente"
-                  @click.stop="sesion && editarSesion(sesion)"
+                  @click.stop="sesion && editarSesion(sesion, curso)"
                   class="relative z-10 opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-emerald-50 text-emerald-500 hover:text-emerald-400 transition-all shrink-0 text-xs"
                 >
                   <PencilIcon class="w-3.5 h-3.5" />
@@ -280,7 +280,7 @@
                 @click="eliminarCurso(curso.c_curso)"
                 class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-400 transition px-2 py-1.5 rounded-lg hover:bg-red-50"
               >
-                <TrashIcon class="w-3.5 h-3.5" /> Eliminar
+                <TrashIcon class="w-3.5 h-3.5" /> Eliminar curso
               </button>
             </div>
             <div v-else />
@@ -448,6 +448,7 @@
       :curso="cursoSeleccionado"
       :sesion="sesionEditando"
       @created="onSesionCreada"
+      @updated="onSesionActualizada"
     />
 
   </div>
@@ -638,7 +639,8 @@ function abrirModalEditar(curso: Curso) {
   showModalCurso.value = true
 }
 
-function editarSesion(sesion: Sesion){
+function editarSesion(sesion: Sesion, curso: Curso){
+  cursoSeleccionado.value = curso
   sesionEditando.value = sesion
   showModalSesion.value = true  
 }
@@ -720,7 +722,23 @@ function onSesionCreada(sesion: Sesion) {
 }
 
 function onCursoActualizado(cursoActualizado: Curso) {
-  cursoStore.updateCurso(cursoActualizado.c_curso, cursoActualizado)
+  //cursoStore.updateCurso(cursoActualizado.c_curso, cursoActualizado)
+}
+
+function onSesionActualizada(sesionActualizada: Sesion) {
+
+  for (const curso of cursos.value) {
+
+    const index = (curso.sesiones ?? []).findIndex(
+      s => s.c_sesion === sesionActualizada.c_sesion
+    )
+
+    if (index !== -1) {
+
+      curso.sesiones[index] = sesionActualizada
+      break
+    }
+  }
 }
 
 async function eliminarSesion(sesionId: string) {
@@ -899,7 +917,42 @@ async function eliminarCurso(cursoId: string) {
   })
   if (!r.isConfirmed) return
   try {
+    //Obtener curso 
+    const curso = cursos.value.find(
+      c => c.c_curso === cursoId
+    )
+
+    if (!curso) return 
+
+    //Recolectar path del storage 
+    const { $supabase } = useNuxtApp()
+
+    const paths = (curso.sesiones ?? [])
+      .flatMap(sesion => sesion.archivos ?? [])
+      .map(archivo => archivo?.l_url
+        ?.split('/public/sesiones/')[1]
+      )
+      .filter((path): path is string => Boolean(path))
+      
+    if (paths.length > 0) {
+      alert("Se va eliminar el archivo desde curso!!!!")
+
+      console.log("Paths: ", paths)
+
+      const { data, error: storageError } = await $supabase.storage
+        .from('sesiones')
+        .remove(paths)
+
+      console.log("dATA: 0")
+      console.log(data)
+
+      if (storageError) {
+        throw new Error(storageError.message)
+      }
+    }
+
     await withLoading(() => elimCurso(cursoId))
+
     cursosAbiertos.value.delete(cursoId)
     sesionesCargadas.value.delete(cursoId)
     await $swal.fire({ title: 'Curso eliminado', icon: 'success', timer: 1500, showConfirmButton: false })
@@ -911,6 +964,13 @@ async function eliminarCurso(cursoId: string) {
 // 
 
 watch(showModalCurso, val => { if (!val) cursoEditando.value = null })
+
+watch(showModalSesion, (open) => {
+  if (!open) {
+    sesionEditando.value = null
+  }
+})
+
 watch(showModalArchivo, val => {
   if (!val) {
     archivoSeleccionado.value = null

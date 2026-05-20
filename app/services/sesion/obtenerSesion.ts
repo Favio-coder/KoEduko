@@ -14,6 +14,7 @@ export async function listSesion(
             l_desc, 
             f_sesion, 
             f_hora,
+            l_reu,
             archivos:archivo (
                 c_archivo,
                 l_nombre,
@@ -34,7 +35,7 @@ export async function listSesion(
         l_desc: sesion.l_desc,
         f_sesion: sesion.f_sesion,  
         f_hora: sesion.f_hora,
-        linkReunion: sesion.linkReunion,
+        linkReunion: sesion.l_reu,
         archivos: sesion.archivos?.map((archivo: any) => ({
             c_archivo: archivo.c_archivo,
             l_nombre: archivo.l_nombre,
