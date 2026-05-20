@@ -42,7 +42,7 @@ function iniciarJitsi() {
   const api = new (window as any).JitsiMeetExternalAPI(domain, options)
 
   api.addEventListener("participantJoined", (e: any) => {
-    console.log("Entró:", e)
+  
   })
 }
 </script>

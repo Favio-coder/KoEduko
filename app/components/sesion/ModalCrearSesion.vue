@@ -271,8 +271,10 @@ import type { CrearSesionDTO }  from '~/types/sesionDTO'
 
 // ── Composable ────────────────────────────────────────────────────────────────
 import { useGrabSesion } from '~/composable/sesion/useGrabSesion'
+import { useEditSesion } from '~/composable/sesion/useEditSesion'
 
 const { grabarSesion, loading, error: errorComposable } = useGrabSesion()
+const {editSesion} = useEditSesion()
 
 // ── Tipos locales ─────────────────────────────────────────────────────────────
 
@@ -469,27 +471,22 @@ async function handleSubmit() {
 
   try {
     if (esEdicion.value && props.sesion?.c_sesion) {
+      
+      const dtoEditar = {
+        ...dto,
+        c_sesion: props.sesion.c_sesion,
 
-      alert("Esta entrando por aca!!")
-
-      const sesionActualizada: Sesion = {
-        ...props.sesion,
-        l_sesion:      dto.l_sesion,
-        l_desc:        dto.l_desc,
-        f_sesion:      dto.f_sesion,
-        f_hora:        dto.f_hora,
-        linkReunion:   dto.l_reu,
-        actualizadoEn: new Date().toISOString(),
+        archivosExistentes: props.sesion.archivos ?? []
       }
+
+      const sesionActualizada = await editSesion(dtoEditar, props.sesion?.c_sesion )
+
       emit('updated', sesionActualizada)
       cerrar()
     } else {
       
-      alert("Si esta creando una nueva sesión")
-
       const sesionCreada = await grabarSesion(dto)
-      console.log("Sesion Creada: ")
-      console.log(sesionCreada)
+
       emit('created', sesionCreada)
       cerrar()
     }

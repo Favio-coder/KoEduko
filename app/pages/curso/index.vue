@@ -134,6 +134,15 @@
                 </div>
 
                 <!-- Eliminar (hover, solo docente) -->
+                 <button
+                  v-if="esDocente"
+                  @click.stop="sesion && editarSesion(sesion)"
+                  class="relative z-10 opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-emerald-50 text-emerald-500 hover:text-emerald-400 transition-all shrink-0 text-xs"
+                >
+                  <PencilIcon class="w-3.5 h-3.5" />
+                  Editar
+                </button>
+
                 <button
                   v-if="esDocente"
                   @click.stop="sesion.c_sesion && eliminarSesion(sesion.c_sesion)"
@@ -224,7 +233,8 @@
                       </p>
                     </div>
                     <button
-                      @click="eliminarArchivo(archivo)"
+                      v-if="esDocente"
+                      @click="eliminarArchivo(archivo, sesion)"
                       class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-400 transition px-2 py-1.5 rounded-lg hover:bg-red-50"
                     >
                       <TrashIcon class="w-3.5 h-3.5" /> Eliminar
@@ -436,6 +446,7 @@
     <SesionModalCrearSesion
       v-model="showModalSesion"
       :curso="cursoSeleccionado"
+      :sesion="sesionEditando"
       @created="onSesionCreada"
     />
 
@@ -465,6 +476,7 @@ import { useElimCurso } from '~/composable/curso/useElimCurso'
 import { useListSesion } from '~/composable/sesion/useListSesion'
 import { withLoading } from '~/utils/withLoading'
 import { useElimSesion } from '~/composable/sesion/useElimSesion'
+import { useElimArchivo } from '~/composable/archivo/useElimArchivo'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
@@ -479,7 +491,7 @@ const { listCursos } = useListCursos()
 const { elimCurso } = useElimCurso()
 const { listSesion } = useListSesion()
 const { elimSesion} = useElimSesion()
-
+const {elimArchivo} = useElimArchivo()
 // ── Estado ────────────────────────────────────────────────────────────────────
 
 const cursos = computed(() => cursoStore.cursos)
@@ -491,6 +503,8 @@ const showModalCurso = ref(false)
 const showModalSesion = ref(false)
 const cursoSeleccionado = ref<Curso | null>(null)
 const cursoEditando = ref<Curso | null>(null)
+const sesionEditando = ref<Sesion | null>(null)
+
 
 // Tabs: mapa sesionId → tab activa
 const tabsActivas = ref<Map<string, 'datos' | 'archivos'>>(new Map())
@@ -624,6 +638,11 @@ function abrirModalEditar(curso: Curso) {
   showModalCurso.value = true
 }
 
+function editarSesion(sesion: Sesion){
+  sesionEditando.value = sesion
+  showModalSesion.value = true  
+}
+
 // ── Toggle curso con lazy-load de sesiones ────────────────────────────────────
 
 async function toggleCurso(id: string) {
@@ -679,8 +698,6 @@ function onCursoCreado(_curso: Curso) {}
 
 function onSesionCreada(sesion: Sesion) {
 
-  console.log("Sesión cargada: ", sesion)
-
   if (!cursoSeleccionado.value) return
 
   // buscar el curso actual
@@ -731,10 +748,6 @@ async function eliminarSesion(sesionId: string) {
 
   try {
 
-    // ═══════════════════════════════════════
-    // ELIMINAR ARCHIVOS FÍSICOS
-    // ═══════════════════════════════════════
-
     const archivos = sesion.archivos ?? []
 
     if (archivos.length > 0) {
@@ -759,7 +772,7 @@ async function eliminarSesion(sesionId: string) {
 
         if (storageError) {
           console.error("Alerta!!!, no se elimino archivo del store: ")
-          console.log(storageError.message)
+  
 
           await $swal.fire({
             title: 'Error',
@@ -802,15 +815,80 @@ async function eliminarSesion(sesionId: string) {
   }
 }
 
-async function eliminarArchivo(archivo: any){
+async function eliminarArchivo(archivo: any, sesion: Sesion) {
   const r = await $swal.fire({
-    title: '¿Eliminar archivo?', text: 'Esta acción no se podrá revertir.', icon: 'warning',
-    showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#9ca3af',
-    confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar',
+    title: '¿Eliminar archivo?',
+    text: 'Esta acción no se podrá revertir.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#9ca3af',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
   })
-  if (!r.isConfirmed) return
-}
 
+  if (!r.isConfirmed) return
+
+  const { $supabase } = useNuxtApp()
+
+  try {
+    // 🔒 validar IDs seguros (evita TS issues)
+    const sesionId = sesion?.c_sesion
+    const archivoId = archivo?.c_archivo
+    const url = archivo?.l_url
+
+    if (!sesionId || !archivoId) return
+
+    // =========================
+    // 1. ELIMINAR DEL STORAGE
+    // =========================
+    if (url) {
+      const path = url.split('/public/sesiones/')[1]
+
+      if (path) {
+        const { error: storageError } = await $supabase.storage
+          .from('sesiones')
+          .remove([path])
+
+        if (storageError) {
+          throw new Error(storageError.message)
+        }
+      }
+    }
+
+    // =========================
+    // 2. ELIMINAR DEL BACKEND
+    // =========================
+    await withLoading(() =>
+      elimArchivo(archivoId, sesionId)
+    )
+
+    // =========================
+    // 3. ACTUALIZAR STORE (UI)
+    // =========================
+    const sesionActual = sesionStore.getSesionById(sesionId)
+
+    if (sesionActual?.archivos) {
+      sesionActual.archivos = sesionActual.archivos.filter(
+        a => a.c_archivo !== archivoId
+      )
+    }
+
+    await $swal.fire({
+      title: 'Archivo eliminado',
+      icon: 'success',
+      timer: 1500,
+      showConfirmButton: false
+    })
+
+  } catch (error: any) {
+    await $swal.fire({
+      title: 'Error',
+      text: error.message || 'No se pudo eliminar el archivo',
+      icon: 'error'
+    })
+  }
+}
 
 
 async function eliminarCurso(cursoId: string) {
@@ -830,7 +908,7 @@ async function eliminarCurso(cursoId: string) {
   }
 }
 
-// ── Watchers ──────────────────────────────────────────────────────────────────
+// 
 
 watch(showModalCurso, val => { if (!val) cursoEditando.value = null })
 watch(showModalArchivo, val => {
@@ -844,20 +922,20 @@ onMounted(async () => {
   try { await withLoading(() => listCursos()) } catch (e) { console.error(e) }
 })
 
-// ── Helpers de fecha ──────────────────────────────────────────────────────────
+// 
 
 function mesCorto(fecha: any) {
-  console.log("Tipo 1: ", typeof fecha)
+
   return new Date(fecha + 'T00:00:00').toLocaleDateString('es', { month: 'short' })
   // return "mes"
 }
 function dia(fecha: any) {
-  console.log("Tipo 2: ", typeof fecha)
+
   return new Date(fecha + 'T00:00:00').getDate().toString()
   // return "día"
 }
 function fechaLarga(fecha: any) {
-  console.log("Tipo 3: ", typeof fecha)
+
   return new Date(fecha + 'T00:00:00').toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })
   // return "fecha larga"
 }
@@ -868,6 +946,9 @@ function plataforma(url: string) {
   if (u.includes('teams.microsoft') || u.includes('teams.live')) return 'Teams'
   return 'Reunión'
 }
+
+
+
 
 // ── Colores por color de curso ────────────────────────────────────────────────
 

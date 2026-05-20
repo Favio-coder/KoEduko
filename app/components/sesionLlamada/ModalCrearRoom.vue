@@ -291,7 +291,7 @@ async function confirmar() {
 async function loginGoogle() {
   try {
     const response = await googleTokenLogin()
-    console.log(response)
+
   } catch (error) {
     console.error('Google login error:', error)
   }
