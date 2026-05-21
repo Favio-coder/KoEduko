@@ -67,9 +67,9 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
-            <span :class="['text-[10px] font-semibold px-2.5 py-1 rounded-full', colorBadge(curso.l_color)]">
+            <!-- <span :class="['text-[10px] font-semibold px-2.5 py-1 rounded-full', colorBadge(curso.l_color)]">
               {{ (curso.sesiones ?? []).length }} sesión{{ (curso.sesiones ?? []).length !== 1 ? 'es' : '' }}
-            </span>
+            </span> -->
             <ChevronDownIcon
               :class="['w-4 h-4 text-gray-400 transition-transform duration-200', cursosAbiertos.has(curso.c_curso) ? 'rotate-180' : '']"
             />
@@ -92,15 +92,18 @@
           </div>
 
           <!-- Lista de sesiones -->
+          <!-- Lista de sesiones -->
           <div v-else class="divide-y divide-gray-50">
             <div
               v-for="sesion in (curso.sesiones ?? [])"
               :key="sesion.c_sesion"
               class="group"
             >
-              <!-- Fila principal de la sesión -->
-              <div class="flex items-start gap-4 px-5 py-4">
-
+              <!-- Fila principal de la sesión (ahora clickeable) -->
+              <div
+                class="flex items-start gap-4 px-5 py-4 cursor-pointer select-none hover:bg-gray-50/60 transition-colors"
+                @click="toggleSesion(sesion.c_sesion!)"
+              >
                 <!-- Fecha pill -->
                 <div :class="['flex flex-col items-center justify-center w-10 shrink-0 rounded-xl py-2', colorFondo(curso.l_color)]">
                   <span :class="['text-[9px] font-semibold uppercase tracking-wide', colorText(curso.l_color)]">
@@ -130,140 +133,150 @@
                       <VideoCameraIcon class="w-3 h-3" />
                       {{ plataforma(sesion.linkReunion || '') }}
                     </a>
-                  </div>
-                </div>
-
-                <!-- Eliminar (hover, solo docente) -->
-                 <button
-                  v-if="esDocente"
-                  @click.stop="sesion && editarSesion(sesion, curso)"
-                  class="relative z-10 opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-emerald-50 text-emerald-500 hover:text-emerald-400 transition-all shrink-0 text-xs"
-                >
-                  <PencilIcon class="w-3.5 h-3.5" />
-                  Editar
-                </button>
-
-                <button
-                  v-if="esDocente"
-                  @click.stop="sesion.c_sesion && eliminarSesion(sesion.c_sesion)"
-                  class="relative z-10 opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-400 transition-all shrink-0 text-xs"
-                >
-                  <TrashIcon class="w-3.5 h-3.5" />
-                  Eliminar
-                </button>
-
-       
-              </div>
-
-              <!-- Tabs por sesión -->
-              <div :class="['flex border-t border-gray-50', colorFondoSuave(curso.l_color)]">
-                <button
-                  v-for="tab in tabs"
-                  :key="tab.key"
-                  @click="setTab(sesion.c_sesion!, tab.key)"
-                  :class="[
-                    'flex items-center gap-1.5 px-4 py-2 text-[11px] font-medium border-b-2 transition-all',
-                    tabActiva(sesion.c_sesion!) === tab.key
-                      ? [colorTabActiva(curso.l_color), colorBorderTab(curso.l_color)]
-                      : 'text-gray-400 border-transparent hover:text-gray-600'
-                  ]"
-                >
-                  <component :is="tab.icon" class="w-3.5 h-3.5" />
-                  {{ tab.label }}
-                  <span
-                    v-if="tab.key === 'archivos' && (sesion.archivos ?? []).length > 0"
-                    :class="['text-[9px] font-semibold px-1.5 py-0.5 rounded-full', colorBadge(curso.l_color)]"
-                  >
-                    {{ (sesion.archivos ?? []).length }}
-                  </span>
-                </button>
-              </div>
-
-              <!-- Tab: Datos generales -->
-              <div v-if="tabActiva(sesion.c_sesion!) === 'datos'" class="px-5 py-4 bg-gray-50/40">
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                  <div class="bg-white rounded-xl p-3 border border-gray-100">
-                    <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1">
-                      <CalendarDaysIcon class="w-3 h-3" /> Fecha
-                    </p>
-                    <p class="text-xs font-semibold text-gray-700">{{ fechaLarga(sesion.f_sesion) }}</p>
-                  </div>
-                  <div class="bg-white rounded-xl p-3 border border-gray-100">
-                    <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1">
-                      <ClockIcon class="w-3 h-3" /> Hora
-                    </p>
-                    <p class="text-xs font-semibold text-gray-700">{{ sesion.f_hora || '-- : --' }}</p>
-                  </div>
-                  <div v-if="sesion.linkReunion" class="col-span-2 bg-white rounded-xl p-3 border border-gray-100">
-                    <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1">
-                      <LinkIcon class="w-3 h-3" /> Enlace de reunión
-                    </p>
-                    <a :href="sesion.linkReunion" target="_blank" class="text-xs font-medium text-emerald-500 hover:underline truncate block">
-                      {{ sesion.linkReunion }}
-                    </a>
-                  </div>
-                </div>
-                <!-- <div class="bg-white rounded-xl p-3 border border-gray-100">
-                  <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1.5">
-                    <ClipboardDocumentListIcon class="w-3 h-3" /> Notas
-                  </p>
-
-                </div> -->
-              </div>
-
-              <!-- Tab: Archivos -->
-              <div v-if="tabActiva(sesion.c_sesion!) === 'archivos'" class="px-5 py-4 bg-gray-50/40">
-                <div v-if="(sesion.archivos ?? []).length === 0" class="flex flex-col items-center py-6 text-center">
-                  <PaperClipIcon class="w-7 h-7 text-gray-200 mb-2" />
-                  <p class="text-xs text-gray-400">No hay archivos adjuntos</p>
-                </div>
-                <div v-else class="space-y-2">
-                  <div
-                    v-for="archivo in sesion.archivos"
-                    :key="archivo.c_archivo"
-                    class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-colors"
-                  >
-                    <div :class="['w-9 h-9 rounded-xl flex items-center justify-center shrink-0', iconoBg(archivo.tipo)]">
-                      <component :is="iconoArchivo(archivo.tipo)" :class="['w-5 h-5', iconoColor(archivo.tipo)]" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-xs font-semibold text-gray-800 truncate">{{ archivo.l_nombre }}</p>
-                      <p class="text-[10px] text-gray-400 mt-0.5">
-                        {{ archivo.tamano }} · <span class="uppercase">{{ archivo.tipo }}</span>
-                      </p>
-                    </div>
-                    <button
-                      v-if="esDocente"
-                      @click="eliminarArchivo(archivo, sesion)"
-                      class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-400 transition px-2 py-1.5 rounded-lg hover:bg-red-50"
+                    <!-- Badge archivos cuando está cerrada -->
+                    <span
+                      v-if="!sesionesAbiertas.has(sesion.c_sesion!) && (sesion.archivos ?? []).length > 0"
+                      class="flex items-center gap-1 text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full"
                     >
-                      <TrashIcon class="w-3.5 h-3.5" /> Eliminar
-                    </button>
+                      <PaperClipIcon class="w-3 h-3" />
+                      {{ (sesion.archivos ?? []).length }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Botones editar/eliminar (solo hover + docente) -->
+                <div class="flex items-center gap-1 shrink-0">
+                  <button
+                    v-if="esDocente"
+                    @click.stop="sesion && editarSesion(sesion, curso)"
+                    class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-emerald-50 text-emerald-500 hover:text-emerald-400 transition-all text-xs"
+                  >
+                    <PencilIcon class="w-3.5 h-3.5" />
+                    Editar
+                  </button>
+                  <button
+                    v-if="esDocente"
+                    @click.stop="sesion.c_sesion && eliminarSesion(sesion.c_sesion)"
+                    class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-400 transition-all text-xs"
+                  >
+                    <TrashIcon class="w-3.5 h-3.5" />
+                    Eliminar
+                  </button>
+
+                  <!-- Chevron toggle sesión -->
+                  <ChevronDownIcon
+                    :class="[
+                      'w-4 h-4 text-gray-300 transition-transform duration-200 ml-1',
+                      sesionesAbiertas.has(sesion.c_sesion!) ? 'rotate-180' : ''
+                    ]"
+                  />
+                </div>
+              </div>
+
+              <!-- Contenido expandible de la sesión -->
+              <Transition
+                enter-active-class="transition-all duration-200 ease-out overflow-hidden"
+                enter-from-class="opacity-0 max-h-0"
+                enter-to-class="opacity-100 max-h-[500px]"
+                leave-active-class="transition-all duration-150 ease-in overflow-hidden"
+                leave-from-class="opacity-100 max-h-[500px]"
+                leave-to-class="opacity-0 max-h-0"
+              >
+                <div v-if="sesionesAbiertas.has(sesion.c_sesion!)">
+
+                  <!-- Tabs por sesión -->
+                  <div :class="['flex border-t border-gray-50', colorFondoSuave(curso.l_color)]">
                     <button
-                      @click="descargarArchivo(archivo)"
-                      :disabled="descargandoArchivos.has(archivo.c_archivo!)"
-                      class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all shrink-0 disabled:opacity-60 disabled:cursor-not-allowed text-gray-500 bg-gray-50 border-gray-100 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200"
+                      v-for="tab in tabs"
+                      :key="tab.key"
+                      @click="setTab(sesion.c_sesion!, tab.key)"
+                      :class="[
+                        'flex items-center gap-1.5 px-4 py-2 text-[11px] font-medium border-b-2 transition-all',
+                        tabActiva(sesion.c_sesion!) === tab.key
+                          ? [colorTabActiva(curso.l_color), colorBorderTab(curso.l_color)]
+                          : 'text-gray-400 border-transparent hover:text-gray-600'
+                      ]"
                     >
-                      <ArrowPathIcon
-                        v-if="descargandoArchivos.has(archivo.c_archivo!)"
-                        class="w-3.5 h-3.5 animate-spin"
-                      />
-
-                      <ClipboardDocumentListIcon
-                        v-else
-                        class="w-3.5 h-3.5"
-                      />
-
-                      {{
-                        descargandoArchivos.has(archivo.c_archivo!)
-                          ? 'Descargando...'
-                          : 'Descargar'
-                      }}
+                      <component :is="tab.icon" class="w-3.5 h-3.5" />
+                      {{ tab.label }}
+                      <span
+                        v-if="tab.key === 'archivos' && (sesion.archivos ?? []).length > 0"
+                        :class="['text-[9px] font-semibold px-1.5 py-0.5 rounded-full', colorBadge(curso.l_color)]"
+                      >
+                        {{ (sesion.archivos ?? []).length }}
+                      </span>
                     </button>
                   </div>
-                </div>
-              </div>
 
+                  <!-- Tab: Datos generales -->
+                  <div v-if="tabActiva(sesion.c_sesion!) === 'datos'" class="px-5 py-4 bg-gray-50/40">
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                      <div class="bg-white rounded-xl p-3 border border-gray-100">
+                        <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1">
+                          <CalendarDaysIcon class="w-3 h-3" /> Fecha
+                        </p>
+                        <p class="text-xs font-semibold text-gray-700">{{ fechaLarga(sesion.f_sesion) }}</p>
+                      </div>
+                      <div class="bg-white rounded-xl p-3 border border-gray-100">
+                        <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1">
+                          <ClockIcon class="w-3 h-3" /> Hora
+                        </p>
+                        <p class="text-xs font-semibold text-gray-700">{{ sesion.f_hora || '-- : --' }}</p>
+                      </div>
+                      <div v-if="sesion.linkReunion" class="col-span-2 bg-white rounded-xl p-3 border border-gray-100">
+                        <p class="text-[10px] text-gray-400 flex items-center gap-1 mb-1">
+                          <LinkIcon class="w-3 h-3" /> Enlace de reunión
+                        </p>
+                        <a :href="sesion.linkReunion" target="_blank" class="text-xs font-medium text-emerald-500 hover:underline truncate block">
+                          {{ sesion.linkReunion }}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tab: Archivos -->
+                  <div v-if="tabActiva(sesion.c_sesion!) === 'archivos'" class="px-5 py-4 bg-gray-50/40">
+                    <div v-if="(sesion.archivos ?? []).length === 0" class="flex flex-col items-center py-6 text-center">
+                      <PaperClipIcon class="w-7 h-7 text-gray-200 mb-2" />
+                      <p class="text-xs text-gray-400">No hay archivos adjuntos</p>
+                    </div>
+                    <div v-else class="space-y-2">
+                      <div
+                        v-for="archivo in sesion.archivos"
+                        :key="archivo.c_archivo"
+                        class="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-colors"
+                      >
+                        <div :class="['w-9 h-9 rounded-xl flex items-center justify-center shrink-0', iconoBg(archivo.tipo)]">
+                          <component :is="iconoArchivo(archivo.tipo)" :class="['w-5 h-5', iconoColor(archivo.tipo)]" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <p class="text-xs font-semibold text-gray-800 truncate">{{ archivo.l_nombre }}</p>
+                          <p class="text-[10px] text-gray-400 mt-0.5">
+                            {{ archivo.tamano }} · <span class="uppercase">{{ archivo.tipo }}</span>
+                          </p>
+                        </div>
+                        <button
+                          v-if="esDocente"
+                          @click="eliminarArchivo(archivo, sesion)"
+                          class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-400 transition px-2 py-1.5 rounded-lg hover:bg-red-50"
+                        >
+                          <TrashIcon class="w-3.5 h-3.5" /> Eliminar
+                        </button>
+                        <button
+                          @click="descargarArchivo(archivo)"
+                          :disabled="descargandoArchivos.has(archivo.c_archivo!)"
+                          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-all shrink-0 disabled:opacity-60 disabled:cursor-not-allowed text-gray-500 bg-gray-50 border-gray-100 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200"
+                        >
+                          <ArrowPathIcon v-if="descargandoArchivos.has(archivo.c_archivo!)" class="w-3.5 h-3.5 animate-spin" />
+                          <ClipboardDocumentListIcon v-else class="w-3.5 h-3.5" />
+                          {{ descargandoArchivos.has(archivo.c_archivo!) ? 'Descargando...' : 'Descargar' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </Transition>
             </div>
           </div>
 
@@ -500,6 +513,20 @@ const cursosAbiertos = ref<Set<string>>(new Set())
 const sesionesCargadas = ref<Set<string>>(new Set())
 const cargandoSesiones = ref<Set<string>>(new Set())
 
+
+const sesionesAbiertas = ref<Set<string>>(new Set())
+
+function toggleSesion(sesionId: string) {
+  if (sesionesAbiertas.value.has(sesionId)) {
+    sesionesAbiertas.value.delete(sesionId)
+  } else {
+    sesionesAbiertas.value.add(sesionId)
+  }
+  // forzar reactividad del Set
+  sesionesAbiertas.value = new Set(sesionesAbiertas.value)
+}
+
+
 const showModalCurso = ref(false)
 const showModalSesion = ref(false)
 const cursoSeleccionado = ref<Curso | null>(null)
@@ -723,6 +750,10 @@ function onSesionCreada(sesion: Sesion) {
 
 function onCursoActualizado(cursoActualizado: Curso) {
   //cursoStore.updateCurso(cursoActualizado.c_curso, cursoActualizado)
+   cursoStore.updateCurso(
+    cursoActualizado.c_curso,
+    cursoActualizado
+  )
 }
 
 function onSesionActualizada(sesionActualizada: Sesion) {
@@ -979,7 +1010,11 @@ watch(showModalArchivo, val => {
 })
 
 onMounted(async () => {
-  try { await withLoading(() => listCursos()) } catch (e) { console.error(e) }
+  try { 
+    await withLoading(() => listCursos()) 
+    console.log("Cursos primero:")
+    console.log(cursos.value)
+  } catch (e) { console.error(e) }
 })
 
 // 

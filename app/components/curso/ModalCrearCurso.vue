@@ -242,6 +242,9 @@ async function handleSubmit() {
 
       const { editCurso } = useEditCurso()
 
+      console.log("Data que se envia para editar: ")
+      console.log(cursoData)
+
       const cursoActualizado = await editCurso(cursoData)
 
       emit('updated', cursoActualizado)

@@ -10,5 +10,5 @@ export interface Curso {
   sesiones:     Sesion[]
   linkReunion?: string | null   // link de reunión general del curso (tab Reunión)
   notas?:       string | null   // notas generales del curso (tab Reunión)
-  f_crea:     string          // ISO date string
+  f_crea:     string
 }

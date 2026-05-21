@@ -18,6 +18,7 @@ export function useEditCurso() {
 
         try {
 
+
             const cursoEditado = await editCursoService(
                 $supabase,
                 cursoData

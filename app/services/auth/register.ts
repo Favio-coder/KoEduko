@@ -23,21 +23,23 @@ export const registrarUsuario = async (payload: {
     throw new Error('No se pudo crear usuario en auth')
   }
 
+  console.log("Data de auth: ", data)
+  console.log("Data de user: ", data)
   const userId = data.user.id
 
   // 2. RPC (UPDATE CORE + ROLES)
-  const { error: rpcError } = await $supabase.schema('core').rpc('register_user_full', {
-    p_user_id: userId,
-    p_email: payload.email,
-    p_nombre: payload.nombre,
-    p_apellp: payload.apellp,
-    p_apellm: payload.apellm,
-    p_fecha_nac: payload.fecha_nac,
-    p_instanceid: payload.instanceid,
-    p_rol: payload.rol
-  })
+  // const { error: rpcError } = await $supabase.schema('core').rpc('register_user_full', {
+  //   p_user_id: userId,
+  //   p_email: payload.email,
+  //   p_nombre: payload.nombre,
+  //   p_apellp: payload.apellp,
+  //   p_apellm: payload.apellm,
+  //   p_fecha_nac: payload.fecha_nac,
+  //   p_instanceid: payload.instanceid,
+  //   p_rol: payload.rol
+  // })
 
-  if (rpcError) throw rpcError
+  // if (rpcError) throw rpcError
 
   return {
     user_id: userId,

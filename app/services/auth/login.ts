@@ -12,6 +12,7 @@ export const loginUsuario = async (
     password
   })
 
+  
   if (error) throw new Error('Credenciales incorrectas')
   
   

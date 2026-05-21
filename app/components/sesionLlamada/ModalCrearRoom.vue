@@ -25,6 +25,35 @@
             />
           </div>
 
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Curso - Sesión
+            </label>
+
+            <select
+              v-model="form.sesion"
+              class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white"
+            >
+              <option disabled value="">
+                Selecciona una sesión
+              </option>
+
+              <template
+                v-for="curso in cursos"
+                :key="curso.c_curso"
+              >
+                <option
+                  v-for="sesion in (curso.sesiones ?? [])"
+                  :key="sesion.c_sesion"
+                  :value="sesion.c_sesion"
+                >
+                  {{ curso.l_curso }} — {{ sesion.l_sesion }}
+                </option>
+              </template>
+
+            </select>
+          </div>
+
           <!-- Plataformas -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Plataforma de videollamada</label>
@@ -205,10 +234,27 @@ import { googleTokenLogin } from 'vue3-google-login';
 import { crearReunionMeet } from '~/services/rooms/generarSala';
 import { crearReunionTeams } from '~/services/rooms/generarSala';
 
+import { useListCursos } from '~/composable/curso/useListCursos';
+import { useListSesion } from '~/composable/sesion/useListSesion';
+import { useGrabLink } from '~/composable/room/useGrabLink';
 
 import type { Room } from '~/types/room';
 
+//Store
+import { useCursoStore } from '#imports';
 
+
+const {listCursos} = useListCursos()
+const {listSesion} = useListSesion()
+const {grabLink} = useGrabLink()
+
+const sesionesCargadas = ref<Set<string>>(new Set())
+
+
+
+const cursoStore = useCursoStore()
+
+const cursos = computed(() => cursoStore.cursos)
 const { prepararToken } = useGoogleCalendarToken()
 const { $swal } = useNuxtApp()
 const props = defineProps<{ modelValue: boolean }>()
@@ -221,6 +267,8 @@ const emit = defineEmits<{
 
 const form = reactive({
   nombre: '',
+  curso: '',
+  sesion: '',
   plataforma: '' as '' | Room['plataforma'],
   linkManual: ''
 })
@@ -228,6 +276,8 @@ const form = reactive({
 watch(() => props.modelValue, (val) => {
   if (!val) {
     form.nombre = ''
+    form.curso = ''
+    form.sesion = ''
     form.plataforma = ''
     form.linkManual = ''
   }
@@ -281,12 +331,77 @@ async function confirmar() {
     nombre: form.nombre.trim(),
     plataforma: form.plataforma,
     link,
+    c_sesion: form.sesion,
     creadoEn: new Date().toLocaleString('es-PE', { dateStyle: 'medium', timeStyle: 'short' })
   }
+
+  console.log("Esto se va enviar a Room: ")
+  console.log(sesion)
+
+  console.log("Esto tmb se va enviar: ")
+  console.log(form.sesion)
+
+  await grabLink(sesion.link, form.sesion)
 
   emit('crear', sesion)
   emit('update:modelValue', false)
 }
+
+onMounted(async () => {
+
+  try {
+
+
+    await withLoading(async () => {
+
+      await listCursos()
+
+    })
+
+
+    await Promise.all(
+
+      cursos.value.map(async (curso) => {
+
+        try {
+
+          // asegurar estructura reactiva
+          curso.sesiones = []
+
+          const sesiones = await withLoading(async () => {
+
+            return await listSesion(curso.c_curso)
+
+          })
+
+          // guardar sesiones dentro del curso
+          curso.sesiones = sesiones ?? []
+
+
+
+        } catch (error) {
+
+          console.error(
+            `Error cargando sesiones del curso ${curso.l_curso}`,
+            error
+          )
+
+          curso.sesiones = []
+        }
+
+
+      })
+
+    )
+    
+    console.log("Cursos: ", cursos.value)
+  } catch (error) {
+
+    console.error("Error general:", error)
+  }
+
+})
+
 
 async function loginGoogle() {
   try {

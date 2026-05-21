@@ -81,15 +81,15 @@
         <!-- Calificaciones (solo estudiante) -->
         <NuxtLink
           v-if="!esDocente"
-          to="/estudiantes"
+          to="/calificaciones"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
-            isActive('/estudiantes')
+            isActive('/calificaciones')
               ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
               : 'text-white/70 hover:bg-white/8 hover:text-white'
           ]"
         >
-          <span v-if="isActive('/estudiantes')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <span v-if="isActive('/calificaciones')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <BookOpenIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Calificaciones</span>
         </NuxtLink>
@@ -377,6 +377,7 @@ const pageTitle = computed(() => {
     '/sesiones': 'Sesiones',
     '/salas': 'Salas de reuniones (Ko Eduko Room)',
     '/curso': 'Cursos y sesiones',
+    '/calificaciones': 'Calificaciones'
   }
   return map[route.path] ?? 'Ko Eduko'
 })

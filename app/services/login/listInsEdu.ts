@@ -1,5 +1,3 @@
-import supabase from "~/plugins/supabase"
-
 export const listInstitucionesEdu = async (supabase: any) => {
 
     const { data, error } = await supabase

@@ -485,8 +485,7 @@ async function handleSubmit() {
       cerrar()
     } else {
       
-      const sesionCreada = await grabarSesion(dto)
-
+      const sesionCreada = await grabarSesion(dto, props.curso!.c_curso) 
       emit('created', sesionCreada)
       cerrar()
     }

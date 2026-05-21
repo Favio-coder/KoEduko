@@ -3,5 +3,6 @@ export interface Room {
   nombre: string
   plataforma: 'jitsi' | 'meet' | 'teams'
   link: string
-  creadoEn: string
+  creadoEn: string,
+  c_sesion: any
 }

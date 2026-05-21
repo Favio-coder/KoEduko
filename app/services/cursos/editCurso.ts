@@ -5,15 +5,17 @@ export async function editCurso(
     curso: Curso
 ): Promise<Curso> {
 
-    const { error } = await supabase
-        .schema('core')
-        .from('curso')
-        .update({
-            l_curso: curso.l_curso,
-            l_desc: curso.l_desc,
-            l_color: curso.l_color,
-        })
-        .eq('c_curso', curso.c_curso)
+
+    const { data, error } = await supabase
+    .schema('core')
+    .from('curso')
+    .update({
+        l_curso: curso.l_curso,
+        l_desc: curso.l_desc,
+        l_color: curso.l_color,
+    })
+    .eq('c_curso', curso.c_curso)
+
 
     if (error) {
         console.error(error)

@@ -1,194 +1,361 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-8">
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Salas</h1>
-        <p class="text-sm text-gray-500 mt-0.5">Gestiona tus sesiones de clase</p>
+        <h1 class="text-lg font-bold text-gray-800">Salas de reunión</h1>
+        <p class="text-xs text-gray-400 mt-0.5">
+          {{ aulaStore.contextoActual || 'Selecciona un aula en Principal' }}
+        </p>
       </div>
       <button
+        v-if="esDocente"
         @click="modalAbierto = true"
-        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm"
+        class="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150 active:scale-95"
       >
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-        </svg>
-        Crear sesión
+        <PlusIcon class="w-4 h-4" />
+        Nueva sala
       </button>
     </div>
 
-    <!-- Empty state -->
+    <!-- EMPTY STATE (sin cursos) -->
     <div
-      v-if="sesiones.length === 0"
-      class="flex flex-col items-center justify-center py-20 text-center"
+      v-if="cargando"
+      class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200"
     >
-      <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
-        </svg>
-      </div>
-      <p class="text-gray-600 font-medium">No hay sesiones creadas</p>
-      <p class="text-gray-400 text-sm mt-1">Crea tu primera sesión para empezar</p>
+      <ArrowPathIcon class="w-6 h-6 text-emerald-400 animate-spin mb-3" />
+      <p class="text-sm text-gray-400">Cargando cursos y sesiones…</p>
     </div>
 
-    <!-- Lista de sesiones -->
-    <div v-else class="grid gap-4">
+    <div
+      v-else-if="cursosConSesiones.length === 0"
+      class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200"
+    >
+      <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
+        <VideoCameraIcon class="w-7 h-7 text-emerald-300" />
+      </div>
+      <p class="text-gray-600 font-semibold text-sm">Sin sesiones disponibles</p>
+      <p class="text-gray-400 text-xs mt-1 text-center max-w-xs">
+        Las salas se organizan por sesión. Crea primero un curso y sus sesiones en la sección de Sesiones.
+      </p>
+    </div>
+
+    <!-- GRUPOS POR CURSO -->
+    <div v-else class="space-y-8">
       <div
-        v-for="s in sesiones"
-        :key="s.id"
-        class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+        v-for="curso in cursosConSesiones"
+        :key="curso.c_curso"
       >
-        <div class="flex items-start justify-between gap-4">
-
-          <!-- Info -->
-          <div class="flex items-center gap-4">
-            <!-- Icono de plataforma -->
-            <div
-              :class="[
-                'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm',
-                s.plataforma === 'meet' ? 'bg-green-600' :
-                s.plataforma === 'teams' ? 'bg-indigo-600' :
-                'bg-linear-to-br from-purple-500 to-pink-500'
-              ]"
-            >
-              <!-- Meet -->
-              <svg v-if="s.plataforma === 'meet'" viewBox="0 0 24 24" class="w-6 h-6" fill="none">
-                <path d="M4 8.5C4 7.67 4.67 7 5.5 7h7C13.33 7 14 7.67 14 8.5v7c0 .83-.67 1.5-1.5 1.5h-7C4.67 17 4 16.33 4 15.5v-7z" fill="white"/>
-                <path d="M14 10.25l5-3v9.5l-5-3v-3.5z" fill="white" fill-opacity="0.8"/>
-              </svg>
-              <!-- Teams -->
-              <svg v-else-if="s.plataforma === 'teams'" viewBox="0 0 24 24" class="w-6 h-6" fill="none">
-                <circle cx="15.5" cy="7.5" r="2" fill="white"/>
-                <path d="M12.5 11h6a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1h-6V11z" fill="white" fill-opacity="0.5"/>
-                <circle cx="9" cy="8.5" r="2.5" fill="white"/>
-                <path d="M4 14a2.5 2.5 0 0 1 2.5-2.5h5A2.5 2.5 0 0 1 14 14v3.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V14z" fill="white"/>
-              </svg>
-              <!-- Misti -->
-              <span v-else class="text-white font-bold text-base">M</span>
-            </div>
-
-            <div>
-              <div class="flex items-center gap-2">
-                <p class="font-semibold text-gray-800">{{ s.nombre }}</p>
-                <span
-                  v-if="s.plataforma === 'jitsi'"
-                  class="text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-300 px-1.5 py-0.5 rounded-full uppercase tracking-wide"
-                >
-                  Beta
-                </span>
-              </div>
-              <p class="text-xs text-gray-400 mt-0.5 capitalize">
-                {{ nombrePlataforma(s.plataforma) }} · {{ s.creadoEn }}
-              </p>
-            </div>
-          </div>
-
-          <!-- Acciones -->
-          <div class="flex items-center gap-2 shrink-0">
-            <!-- Copiar link -->
-            <button
-              @click="copiarLink(s)"
-              :title="'Copiar enlace'"
-              class="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition"
-            >
-              <svg v-if="copiado !== s.id" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-              </svg>
-              <svg v-else class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-              </svg>
-            </button>
-
-            <!-- Entrar a la sala -->
-            <a
-              :href="s.link"
-              target="_blank"
-              rel="noopener noreferrer"
-              :class="[
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white transition',
-                s.plataforma === 'jitsi'
-                  ? 'bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-                  : 'bg-blue-600 hover:bg-blue-700'
-              ]"
-            >
-              Entrar
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-              </svg>
-            </a>
-
-            <!-- Eliminar -->
-            <button
-              @click="eliminarSesion(s.id)"
-              class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
-              title="Eliminar sesión"
-            >
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
-            </button>
-          </div>
-
+        <!-- Cabecera del grupo -->
+        <div class="flex items-center gap-3 mb-4">
+          <div :class="['w-2.5 h-2.5 rounded-full shrink-0', colorDot(curso.l_color)]" />
+          <h2 class="text-sm font-bold text-gray-700">{{ curso.l_curso }}</h2>
+          <div class="flex-1 h-px bg-gray-100" />
+          <span :class="['text-[10px] font-semibold px-2.5 py-1 rounded-full', colorBadge(curso.l_color)]">
+            {{ (curso.sesiones ?? []).length }} sesión{{ (curso.sesiones ?? []).length !== 1 ? 'es' : '' }}
+          </span>
         </div>
 
-        <!-- Link visible -->
-        <div class="mt-3 bg-gray-50 rounded-lg px-3 py-2 flex items-center gap-2">
-          <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-          </svg>
-          <span class="text-xs text-gray-500 truncate font-mono">{{ s.link }}</span>
+        <!-- Grid de tarjetas de sesión -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="sesion in (curso.sesiones ?? [])"
+            :key="sesion.c_sesion"
+            class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col"
+          >
+            <!-- Franja de color superior -->
+            <div :class="['h-1.5 w-full', colorBar(curso.l_color)]" />
+
+            <!-- Cuerpo -->
+            <div class="flex flex-col flex-1 p-4 gap-3">
+
+              <!-- Fecha pill + título -->
+              <div class="flex items-start gap-3">
+                <div :class="['flex flex-col items-center justify-center w-10 h-12 shrink-0 rounded-xl', colorFondo(curso.l_color)]">
+                  <span :class="['text-[9px] font-semibold uppercase tracking-wide', colorText(curso.l_color)]">
+                    {{ mesCorto(sesion.f_sesion) }}
+                  </span>
+                  <span :class="['text-base font-bold leading-tight', colorText(curso.l_color)]">
+                    {{ dia(sesion.f_sesion) }}
+                  </span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-gray-800 leading-snug">{{ sesion.l_sesion }}</p>
+                  <p v-if="sesion.l_desc" class="text-[11px] text-gray-400 mt-0.5 truncate">{{ sesion.l_desc }}</p>
+                </div>
+              </div>
+
+              <!-- Hora -->
+              <div v-if="sesion.f_hora" class="flex items-center gap-1.5 text-[11px] text-gray-500">
+                <ClockIcon class="w-3.5 h-3.5 shrink-0" />
+                {{ sesion.f_hora }}
+              </div>
+
+              <!-- Estado de la sala -->
+              <div class="flex-1">
+                <!-- Con enlace de reunión -->
+                <div v-if="sesion.linkReunion" class="space-y-2.5">
+                  <!-- Badge plataforma -->
+                  <div class="flex items-center gap-2">
+                    <!-- Ícono plataforma -->
+                    <div :class="['w-6 h-6 rounded-lg flex items-center justify-center shrink-0', plataformaBg(sesion.linkReunion)]">
+                      <component :is="plataformaIcono(sesion.linkReunion)" class="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <span class="text-[11px] font-semibold text-gray-600">
+                      {{ plataformaNombre(sesion.linkReunion) }}
+                    </span>
+                    <span class="ml-auto flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                      Activa
+                    </span>
+                  </div>
+
+                  <!-- URL truncada -->
+                  <div class="bg-gray-50 rounded-lg px-2.5 py-1.5 flex items-center gap-1.5">
+                    <LinkIcon class="w-3 h-3 text-gray-300 shrink-0" />
+                    <span class="text-[10px] text-gray-400 truncate font-mono">{{ sesion.linkReunion }}</span>
+                  </div>
+                </div>
+
+                <!-- Sin enlace -->
+                <div
+                  v-else
+                  class="flex items-center gap-2 py-2 px-3 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+                >
+                  <VideoCameraSlashIcon class="w-4 h-4 text-gray-300 shrink-0" />
+                  <p class="text-[11px] text-gray-400">Sin sala asignada</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Footer acciones -->
+            <div class="px-4 py-3 border-t border-gray-50 flex items-center gap-2">
+              <!-- Botón copiar invitación -->
+              <button
+                v-if="sesion.linkReunion"
+                @click="copiarInvitacion(sesion)"
+                class="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium text-gray-500 bg-gray-50 border border-gray-100 rounded-lg hover:bg-gray-100 transition"
+              >
+                <CheckIcon v-if="copiadoId === sesion.c_sesion" class="w-3 h-3 text-emerald-500" />
+                <ClipboardIcon v-else class="w-3 h-3" />
+                {{ copiadoId === sesion.c_sesion ? 'Copiado' : 'Copiar' }}
+              </button>
+
+              <!-- Botón entrar -->
+              <a
+                v-if="sesion.linkReunion"
+                :href="sesion.linkReunion"
+                target="_blank"
+                rel="noopener noreferrer"
+                :class="['ml-auto flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-white rounded-lg transition', colorBoton(curso.l_color)]"
+              >
+                Entrar
+                <ArrowTopRightOnSquareIcon class="w-3 h-3" />
+              </a>
+
+              <!-- Sin link: botón crear sala -->
+              <button
+                v-else-if="esDocente"
+                @click="abrirModalConSesion(curso, sesion)"
+                :class="['ml-auto flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold rounded-lg transition border', colorBotonOutline(curso.l_color)]"
+              >
+                <PlusIcon class="w-3 h-3" />
+                Crear sala
+              </button>
+            </div>
+
+          </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- MODAL -->
     <SesionLlamadaModalCrearRoom
       v-model="modalAbierto"
-    @crear="agregarSesion"
+      :curso-preseleccionado="cursoPreseleccionado"
+      :sesion-preseleccionada="sesionPreseleccionada"
+      @crear="onSalaCreada"
     />
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { Room } from '~/types/room'
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '#imports'
+import { useAulaStore } from '~/stores/aula'
+import { useCursoStore } from '#imports'
+import { useListCursos } from '~/composable/curso/useListCursos'
+import { useListSesion } from '~/composable/sesion/useListSesion'
+import { withLoading } from '~/utils/withLoading'
+import type { Curso } from '~/types/curso'
+import type { Sesion } from '~/types/sesion'
 
+import {
+  PlusIcon, ArrowPathIcon, VideoCameraIcon, ClockIcon,
+  LinkIcon, CheckIcon, ArrowTopRightOnSquareIcon,
+  ClipboardIcon,
+} from '@heroicons/vue/24/outline'
 
+import {
+  VideoCameraSlashIcon,
+} from '@heroicons/vue/24/outline'
 
-const sesiones = ref<Room[]>([])
-const modalAbierto = ref(false)
-const copiado = ref<number | null>(null)
+definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
-function agregarSesion(sesion: Room) {
-  sesiones.value.unshift(sesion)
+const authStore  = useAuthStore()
+const aulaStore  = useAulaStore()
+const cursoStore = useCursoStore()
+
+const esDocente = computed(() => authStore.user?.rol === 'Docente')
+
+const { listCursos } = useListCursos()
+const { listSesion }  = useListSesion()
+
+const cargando               = ref(false)
+const modalAbierto           = ref(false)
+const copiadoId              = ref<string | null>(null)
+const cursoPreseleccionado   = ref<Curso | null>(null)
+const sesionPreseleccionada  = ref<Sesion | null>(null)
+
+// Solo cursos que tienen al menos 1 sesión
+const cursosConSesiones = computed(() =>
+  cursoStore.cursos.filter(c => (c.sesiones ?? []).length > 0)
+)
+
+// ── Helpers fecha ─────────────────────────────────────────────────────────────
+function mesCorto(f: string) {
+  return new Date(f + 'T00:00:00').toLocaleDateString('es', { month: 'short' })
+}
+function dia(f: string) {
+  return new Date(f + 'T00:00:00').getDate().toString()
 }
 
-function eliminarSesion(id: number) {
-  sesiones.value = sesiones.value.filter(s => s.id !== id)
+// ── Plataforma ────────────────────────────────────────────────────────────────
+import {
+  GlobeAltIcon, // fallback
+} from '@heroicons/vue/24/outline'
+
+function plataformaNombre(url: string) {
+  const u = url.toLowerCase()
+  if (u.includes('meet.google'))   return 'Google Meet'
+  if (u.includes('zoom.us'))       return 'Zoom'
+  if (u.includes('teams.'))        return 'Microsoft Teams'
+  if (u.includes('meet.jit.si'))   return 'KoEduko Meet'
+  return 'Reunión'
 }
 
-function nombrePlataforma(p: string): string {
-  return { meet: 'Google Meet', teams: 'Microsoft Teams', misti: 'Misti' }[p] ?? p
+function plataformaIcono(_url: string) {
+  return VideoCameraIcon
 }
 
-async function copiarLink(s: Room) {
-  await navigator.clipboard.writeText(
-  `🎓 Invitación a sesión — KoEduko
-    Hola 👋
-    Te comparto el enlace de acceso a la sesión en línea.
-    Haz clic en el siguiente enlace para unirte:
-    🔗 ${s.link}
-    Nos vemos en la sesión 🚀`
+function plataformaBg(url: string) {
+  const u = url.toLowerCase()
+  if (u.includes('meet.google')) return 'bg-green-500'
+  if (u.includes('zoom.us'))     return 'bg-blue-500'
+  if (u.includes('teams.'))      return 'bg-indigo-500'
+  if (u.includes('jit.si'))      return 'bg-emerald-500'
+  return 'bg-gray-400'
+}
+
+// ── Acciones ──────────────────────────────────────────────────────────────────
+async function copiarInvitacion(sesion: Sesion) {
+  const texto = `🎓 Invitación a sesión — KoEduko\n\nHola 👋\nTe comparto el enlace de acceso a la sesión "${sesion.l_sesion}".\n\n🔗 ${sesion.linkReunion}\n\nNos vemos en la sesión 🚀`
+  await navigator.clipboard.writeText(texto)
+  copiadoId.value = sesion.c_sesion ?? null
+  setTimeout(() => { copiadoId.value = null }, 2000)
+}
+
+function abrirModalConSesion(curso: Curso, sesion: Sesion) {
+  cursoPreseleccionado.value  = curso
+  sesionPreseleccionada.value = sesion
+  modalAbierto.value = true
+}
+
+function onSalaCreada(sala: any) {
+
+  const sesionEncontrada = cursoStore.cursos
+    .flatMap(curso => curso.sesiones ?? [])
+    .find(s => s.c_sesion === sala.c_sesion)
+
+  if (sesionEncontrada) {
+    sesionEncontrada.linkReunion = sala.link
+  }
+
+  modalAbierto.value = false
+}
+
+// ── Carga inicial ─────────────────────────────────────────────────────────────
+onMounted(async () => {
+  cargando.value = true
+  try {
+    await withLoading(() => listCursos())
+
+    await Promise.all(
+      cursoStore.cursos.map(async (curso) => {
+        try {
+          const sesiones = await listSesion(curso.c_curso)
+          curso.sesiones = sesiones ?? []
+        } catch {
+          curso.sesiones = []
+        }
+      })
     )
-  copiado.value = s.id
-  setTimeout(() => { copiado.value = null }, 2000)
+  } finally {
+    cargando.value = false
+  }
+})
+
+// ── Colores por curso ─────────────────────────────────────────────────────────
+const dots: Record<string, string> = {
+  emerald: 'bg-emerald-500', blue: 'bg-blue-500', violet: 'bg-violet-500',
+  rose: 'bg-rose-500', amber: 'bg-amber-500', cyan: 'bg-cyan-500', slate: 'bg-slate-500',
+}
+const bars: Record<string, string> = {
+  emerald: 'bg-emerald-400', blue: 'bg-blue-400', violet: 'bg-violet-400',
+  rose: 'bg-rose-400', amber: 'bg-amber-400', cyan: 'bg-cyan-400', slate: 'bg-slate-300',
+}
+const fondos: Record<string, string> = {
+  emerald: 'bg-emerald-50', blue: 'bg-blue-50', violet: 'bg-violet-50',
+  rose: 'bg-rose-50', amber: 'bg-amber-50', cyan: 'bg-cyan-50', slate: 'bg-slate-50',
+}
+const texts: Record<string, string> = {
+  emerald: 'text-emerald-600', blue: 'text-blue-600', violet: 'text-violet-600',
+  rose: 'text-rose-600', amber: 'text-amber-600', cyan: 'text-cyan-600', slate: 'text-slate-600',
+}
+const badges: Record<string, string> = {
+  emerald: 'bg-emerald-100 text-emerald-700', blue: 'bg-blue-100 text-blue-700',
+  violet: 'bg-violet-100 text-violet-700', rose: 'bg-rose-100 text-rose-700',
+  amber: 'bg-amber-100 text-amber-700', cyan: 'bg-cyan-100 text-cyan-700',
+  slate: 'bg-slate-100 text-slate-700',
+}
+const botones: Record<string, string> = {
+  emerald: 'bg-emerald-500 hover:bg-emerald-600',
+  blue:    'bg-blue-500 hover:bg-blue-600',
+  violet:  'bg-violet-500 hover:bg-violet-600',
+  rose:    'bg-rose-500 hover:bg-rose-600',
+  amber:   'bg-amber-500 hover:bg-amber-600',
+  cyan:    'bg-cyan-500 hover:bg-cyan-600',
+  slate:   'bg-slate-500 hover:bg-slate-600',
+}
+const botonesOutline: Record<string, string> = {
+  emerald: 'border-emerald-300 text-emerald-600 hover:bg-emerald-50',
+  blue:    'border-blue-300 text-blue-600 hover:bg-blue-50',
+  violet:  'border-violet-300 text-violet-600 hover:bg-violet-50',
+  rose:    'border-rose-300 text-rose-600 hover:bg-rose-50',
+  amber:   'border-amber-300 text-amber-600 hover:bg-amber-50',
+  cyan:    'border-cyan-300 text-cyan-600 hover:bg-cyan-50',
+  slate:   'border-slate-300 text-slate-600 hover:bg-slate-50',
 }
 
-definePageMeta({
-  layout: 'dashboard',
-  middleware: 'auth'
-})
+const colorDot         = (c: string) => dots[c]          ?? dots.emerald
+const colorBar         = (c: string) => bars[c]          ?? bars.emerald
+const colorFondo       = (c: string) => fondos[c]        ?? fondos.emerald
+const colorText        = (c: string) => texts[c]         ?? texts.emerald
+const colorBadge       = (c: string) => badges[c]        ?? badges.emerald
+const colorBoton       = (c: string) => botones[c]       ?? botones.emerald
+const colorBotonOutline = (c: string) => botonesOutline[c] ?? botonesOutline.emerald
 </script>

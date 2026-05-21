@@ -64,10 +64,10 @@ export const useCursoStore = defineStore('curso', {
 
             if (index !== -1) {
 
-                this.cursos[index] = {
+                this.cursos.splice(index, 1, {
                     ...this.cursos[index],
                     ...data
-                } as Curso
+                } as Curso)
 
             }
         },
