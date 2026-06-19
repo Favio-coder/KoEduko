@@ -1,0 +1,24 @@
+{
+  "institucion": {
+    "c_ie": "12345678",
+    "l_col": "Colegio Nacional Test"
+  },
+  "estudiante": {
+    "email": "estudiante.nuevo@test.com",
+    "emailInvalido": "correo-sin-formato",
+    "emailDuplicado": "estudiante.existente@test.com",
+    "nombre": "Carlos",
+    "apellidoPaterno": "Ramirez",
+    "apellidoMaterno": "Torres",
+    "fechaNacimiento": "2010-05-15",
+    "passwordFuerte": "MiClaveSegura1!X",
+    "passwordDebil": "123456",
+    "nombreNoAlfanumerico": "Carlos@#!",
+    "apellidoPaternoNoAlfanumerico": "Ramirez$%",
+    "apellidoMaternoNoAlfanumerico": "Torres&*"
+  },
+  "contexto": {
+    "instance_id": "inst-test-001",
+    "l_rol": "Alumno"
+  }
+}

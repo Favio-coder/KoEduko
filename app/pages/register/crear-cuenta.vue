@@ -194,6 +194,10 @@ function barColor(i: number) {
   return i <= nivel.value ? 'bg-green-500' : 'bg-gray-200'
 }
 
+function esCampoAlfanumerico(valor: string) {
+  return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ]+$/.test(valor.trim())
+}
+
 /* CREAR CUENTA */
 async function crearCuenta() {
 
@@ -208,6 +212,14 @@ async function crearCuenta() {
     return
   }
 
+  if (
+    !esCampoAlfanumerico(form.nombre) ||
+    !esCampoAlfanumerico(form.apellidoPaterno) ||
+    !esCampoAlfanumerico(form.apellidoMaterno)
+  ) {
+    $swal.fire('Error', 'Los campos de nombre solo permiten caracteres alfanuméricos', 'error')
+    return
+  }
 
   if (puntaje.value < 6) {
     $swal.fire('Error', 'Contraseña insegura', 'warning')
