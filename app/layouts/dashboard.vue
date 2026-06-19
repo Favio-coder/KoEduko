@@ -79,7 +79,7 @@
 
 
         <!-- Calificaciones (solo estudiante) -->
-        <NuxtLink
+        <!-- <NuxtLink
           v-if="!esDocente"
           to="/calificaciones"
           :class="[
@@ -92,7 +92,7 @@
           <span v-if="isActive('/calificaciones')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <BookOpenIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Calificaciones</span>
-        </NuxtLink>
+        </NuxtLink> -->
 
         <!-- Emparejamiento (solo docente) -->
         <NuxtLink
@@ -181,20 +181,20 @@
 
           <!-- Notification bell -->
           <div class="relative" ref="notifRef">
-            <button
+            <!-- <button
               @click="toggleNotif"
               class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-700 transition-all duration-150"
               aria-label="Notificaciones"
             >
               <BellIcon class="w-5 h-5" />
-              <!-- Badge -->
+              
               <span
                 v-if="unreadCount > 0"
                 class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow"
               >
                 {{ unreadCount > 9 ? '9+' : unreadCount }}
               </span>
-            </button>
+            </button> -->
 
             <!-- Notification dropdown -->
             <Transition
@@ -223,11 +223,11 @@
 
                 <!-- List -->
                 <div class="max-h-72 overflow-y-auto divide-y divide-gray-50">
-                  <div v-if="notificaciones.length === 0" class="px-4 py-8 text-center text-gray-400 text-sm">
+                  <!-- <div v-if="notificaciones.length === 0" class="px-4 py-8 text-center text-gray-400 text-sm">
                     <BellSlashIcon class="w-8 h-8 mx-auto mb-2 opacity-40" />
                     Sin notificaciones nuevas
-                  </div>
-                  <div
+                  </div> -->
+                  <!-- <div
                     v-for="n in notificaciones"
                     :key="n.id"
                     :class="[
@@ -236,7 +236,7 @@
                     ]"
                     @click="marcarLeida(n)"
                   >
-                    <!-- Icon type -->
+                 
                     <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5', n.color]">
                       <component :is="n.icon" class="w-4 h-4" />
                     </div>
@@ -246,7 +246,7 @@
                       <p class="text-[10px] text-gray-400 mt-1">{{ n.tiempo }}</p>
                     </div>
                     <span v-if="!n.leida" class="w-2 h-2 bg-green-500 rounded-full shrink-0 mt-1.5"></span>
-                  </div>
+                  </div> -->
                 </div>
 
                 <!-- Footer -->
@@ -297,12 +297,12 @@
                   <p class="text-sm font-semibold text-gray-800">{{ authStore.user?.nombre }}</p>
                   <p class="text-xs text-gray-400 capitalize">{{ authStore.user?.rol }}</p>
                 </div>
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                <!-- <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
                   <UserCircleIcon class="w-4 h-4" /> Mi perfil
-                </button>
-                <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                </button> -->
+                <!-- <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
                   <Cog6ToothIcon class="w-4 h-4" /> Configuración
-                </button>
+                </button> -->
                 <div class="border-t border-gray-50 mt-1 pt-1">
                   <button
                     @click="logout"
@@ -377,7 +377,6 @@ const pageTitle = computed(() => {
     '/sesiones': 'Sesiones',
     '/salas': 'Salas de reuniones (Ko Eduko Room)',
     '/curso': 'Cursos y sesiones',
-    '/calificaciones': 'Calificaciones'
   }
   return map[route.path] ?? 'Ko Eduko'
 })

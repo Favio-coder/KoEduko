@@ -230,13 +230,19 @@ async function crearCuenta() {
       rol: rol.value
     })
 
+    // await router.push({
+    //   path: '/register/verificar-email',
+    //   query: { email: form.email }
+    // })
     $swal.fire({
+      title: '¡Éxito!',
+      text: 'Cuenta creada con éxito',
       icon: 'success',
-      title: 'Cuenta creada',
-      text: 'Cuenta creada exitósamente, revisa tu correo para confirmar la creación de tu cuenta'
-    })
-
-    //await router.push('/')
+      timer: 2000,
+      showConfirmButton: false
+    }).then(() => {
+      router.push('/');
+    });
 
   } catch (err: any) {
     $swal.fire('Error', err.message, 'error')
