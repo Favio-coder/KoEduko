@@ -1,6 +1,7 @@
 import type { Curso } from "~/types/curso";
 import { editCurso as editCursoService } from "~/services/cursos/editCurso";
 import { useCursoStore } from "#imports";
+import { useNotificaciones } from "~/composable/notificaciones/useNotificaciones";
 
 export function useEditCurso() {
 
@@ -10,6 +11,7 @@ export function useEditCurso() {
     const error = ref<string | null>(null)
 
     const cursoStore = useCursoStore()
+    const { notificarCursoEditado } = useNotificaciones()
 
     async function editCurso(cursoData: Curso) {
 
@@ -17,7 +19,6 @@ export function useEditCurso() {
         error.value = null
 
         try {
-
 
             const cursoEditado = await editCursoService(
                 $supabase,
@@ -28,6 +29,8 @@ export function useEditCurso() {
                 cursoEditado.c_curso,
                 cursoEditado
             )
+
+            notificarCursoEditado(cursoEditado.l_curso)
 
             return cursoEditado
 

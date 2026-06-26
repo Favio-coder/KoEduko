@@ -1,23 +1,51 @@
 <template>
   <div class="flex h-screen overflow-hidden bg-gray-50">
 
+    <!-- Mobile overlay backdrop -->
+    <Transition
+      enter-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="mobileMenuOpen"
+        class="fixed inset-0 bg-black/50 z-20 lg:hidden"
+        @click="mobileMenuOpen = false"
+      />
+    </Transition>
+
+    <!-- Sidebar -->
     <aside
-      class="w-64 shrink-0 flex flex-col"
+      :class="[
+        'fixed lg:relative z-30 h-full w-64 flex flex-col transition-transform duration-300 ease-in-out',
+        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      ]"
       style="background: linear-gradient(180deg, #1a3333 0%, #1e3d3d 60%, #162e2e 100%); box-shadow: 4px 0 24px rgba(0,0,0,0.18);"
     >
-      <!-- LOGO -->
-      <div class="flex items-center gap-3 px-5 py-6 border-b border-white/10">
-        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-md">
-          <img src="/logo/logEddukko-solo.png" class="w-7 h-7 object-contain" />
+      <!-- LOGO + close button -->
+      <div class="flex items-center justify-between gap-3 px-5 py-6 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-md">
+            <img src="/logo/logEddukko-solo.png" class="w-7 h-7 object-contain" />
+          </div>
+          <div>
+            <p class="text-white font-bold text-base leading-tight tracking-wide">Ko Eduko</p>
+            <p class="text-green-400/70 text-[10px] font-medium tracking-widest uppercase">Colaboración & Aula</p>
+          </div>
         </div>
-        <div>
-          <p class="text-white font-bold text-base leading-tight tracking-wide">Ko Eduko</p>
-          <p class="text-green-400/70 text-[10px] font-medium tracking-widest uppercase">Colaboración & Aula</p>
-        </div>
+        <button
+          @click="mobileMenuOpen = false"
+          class="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition"
+        >
+          <XMarkIcon class="w-5 h-5" />
+        </button>
       </div>
 
       <!-- NAV -->
-      <nav class="flex-1 px-3 py-5 space-y-1">
+      <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
 
         <!-- Label section -->
         <p class="text-white/30 text-[10px] font-semibold uppercase tracking-widest px-3 mb-2">Menú</p>
@@ -25,6 +53,7 @@
         <!-- Principal -->
         <NuxtLink
           to="/principal"
+          @click="mobileMenuOpen = false"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
             isActive('/principal')
@@ -37,9 +66,10 @@
           <span>Principal</span>
         </NuxtLink>
 
-        <!-- Sesiones -->
+        <!-- Curso -->
         <NuxtLink
           to="/curso"
+          @click="mobileMenuOpen = false"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
             isActive('/curso')
@@ -50,21 +80,13 @@
           <span v-if="isActive('/curso')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <BookOpenIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Curso</span>
-          <!-- Sesiones activas badge -->
-          <!-- <span
-            v-if="sesionesActivas > 0"
-            class="ml-auto flex items-center gap-1 text-[10px] bg-emerald-400/20 text-emerald-300 px-2 py-0.5 rounded-full font-semibold"
-          >
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-            {{ sesionesActivas }}
-          </span> -->
         </NuxtLink>
-
 
         <!-- Estudiantes (solo docente) -->
         <NuxtLink
           v-if="esDocente"
           to="/estudiantes"
+          @click="mobileMenuOpen = false"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
             isActive('/estudiantes')
@@ -77,11 +99,11 @@
           <span>Estudiantes</span>
         </NuxtLink>
 
-
-        <!-- Calificaciones (solo estudiante) -->
-        <!-- <NuxtLink
+        <!-- Calificativos (solo estudiante) -->
+        <NuxtLink
           v-if="!esDocente"
           to="/calificaciones"
+          @click="mobileMenuOpen = false"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
             isActive('/calificaciones')
@@ -91,13 +113,14 @@
         >
           <span v-if="isActive('/calificaciones')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <BookOpenIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
-          <span>Calificaciones</span>
-        </NuxtLink> -->
+          <span>Calificativos</span>
+        </NuxtLink>
 
         <!-- Emparejamiento (solo docente) -->
         <NuxtLink
           v-if="esDocente"
           to="/emparejamiento"
+          @click="mobileMenuOpen = false"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
             isActive('/emparejamiento')
@@ -111,9 +134,10 @@
           <span class="ml-auto text-[10px] bg-green-400/20 text-green-300 px-2 py-0.5 rounded-full font-semibold">Beta</span>
         </NuxtLink>
 
-        <!-- Principal -->
+        <!-- Salas -->
         <NuxtLink
           to="/salas"
+          @click="mobileMenuOpen = false"
           :class="[
             'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
             isActive('/salas')
@@ -126,27 +150,27 @@
           <span>Salas</span>
         </NuxtLink>
 
+        <!-- Perfil -->
+        <NuxtLink
+          to="/perfil"
+          @click="mobileMenuOpen = false"
+          :class="[
+            'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
+            isActive('/perfil')
+              ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
+              : 'text-white/70 hover:bg-white/8 hover:text-white'
+          ]"
+        >
+          <span v-if="isActive('/perfil')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <UserCircleIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>Perfil</span>
+        </NuxtLink>
+
       </nav>
 
-      <!-- BOTTOM: user mini + logout -->
+      <!-- BOTTOM: logout -->
       <div class="px-3 pb-5 space-y-3">
-        <!-- Divider -->
         <div class="border-t border-white/10 mb-3"></div>
-
-        <!-- Mini user card -->
-        <!-- <div class="flex items-center gap-3 px-3 py-2">
-          <div
-            class="w-8 h-8 rounded-full bg-linear-to-br bg-[#2f4f4f] flex items-center justify-center text-white text-sm font-bold shrink-0 shadow"
-          >
-            {{ inicialNombre }}
-          </div>
-          <div class="min-w-0">
-            <p class="text-white text-xs font-semibold truncate">{{ authStore.user?.nombre ?? 'Usuario' }}</p>
-            <p class="text-white/40 text-[10px] capitalize truncate">{{ authStore.user?.rol ?? 'Rol' }}</p>
-          </div>
-        </div> -->
-
-        <!-- Logout -->
         <button
           @click="logout"
           class="group flex items-center gap-2 w-full px-3 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
@@ -163,11 +187,17 @@
     <div class="flex-1 flex flex-col min-w-0">
 
       <!-- ── TOP NAVBAR ── -->
-      <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-40 shadow-sm">
+      <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-6 sticky top-0 z-10 shadow-sm">
 
-        <!-- LEFT: page title / breadcrumb (slot or auto) -->
+        <!-- LEFT: hamburger + page title -->
         <div class="flex items-center gap-2">
-          <h1 class="text-gray-800 font-semibold text-base tracking-tight">{{ pageTitle }}</h1>
+          <button
+            @click="mobileMenuOpen = true"
+            class="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition -ml-1"
+          >
+            <Bars3Icon class="w-5 h-5" />
+          </button>
+          <h1 class="text-gray-800 font-semibold text-sm sm:text-base tracking-tight truncate max-w-[200px] sm:max-w-none">{{ pageTitle }}</h1>
         </div>
 
         <!-- RIGHT: actions -->
@@ -181,7 +211,7 @@
 
           <!-- Notification bell -->
           <div class="relative" ref="notifRef">
-            <!-- <button
+            <button
               @click="toggleNotif"
               class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-700 transition-all duration-150"
               aria-label="Notificaciones"
@@ -189,12 +219,12 @@
               <BellIcon class="w-5 h-5" />
               
               <span
-                v-if="unreadCount > 0"
+                v-if="notifStore.unreadCount > 0"
                 class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow"
               >
-                {{ unreadCount > 9 ? '9+' : unreadCount }}
+                {{ notifStore.unreadCount > 9 ? '9+' : notifStore.unreadCount }}
               </span>
-            </button> -->
+            </button>
 
             <!-- Notification dropdown -->
             <Transition
@@ -213,8 +243,8 @@
                 <div class="flex items-center justify-between px-4 py-3 border-b border-gray-50">
                   <span class="text-sm font-semibold text-gray-800">Notificaciones</span>
                   <button
-                    v-if="unreadCount > 0"
-                    @click="markAllRead"
+                    v-if="notifStore.unreadCount > 0"
+                    @click="notifStore.marcarTodasLeidas()"
                     class="text-xs text-green-600 hover:text-green-700 font-medium transition"
                   >
                     Marcar todas como leídas
@@ -223,22 +253,21 @@
 
                 <!-- List -->
                 <div class="max-h-72 overflow-y-auto divide-y divide-gray-50">
-                  <!-- <div v-if="notificaciones.length === 0" class="px-4 py-8 text-center text-gray-400 text-sm">
+                  <div v-if="notifStore.todas.length === 0" class="px-4 py-8 text-center text-gray-400 text-sm">
                     <BellSlashIcon class="w-8 h-8 mx-auto mb-2 opacity-40" />
-                    Sin notificaciones nuevas
-                  </div> -->
-                  <!-- <div
-                    v-for="n in notificaciones"
+                    Sin notificaciones
+                  </div>
+                  <div
+                    v-for="n in notifStore.todas"
                     :key="n.id"
                     :class="[
                       'flex items-start gap-3 px-4 py-3 transition-colors cursor-pointer',
                       n.leida ? 'hover:bg-gray-50' : 'bg-green-50/60 hover:bg-green-50'
                     ]"
-                    @click="marcarLeida(n)"
+                    @click="notifStore.marcarLeida(n.id)"
                   >
-                 
-                    <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5', n.color]">
-                      <component :is="n.icon" class="w-4 h-4" />
+                    <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5', notifColor(n)]">
+                      <component :is="notifIcon[n.tipo]" class="w-4 h-4" />
                     </div>
                     <div class="min-w-0 flex-1">
                       <p class="text-xs font-semibold text-gray-800 leading-snug">{{ n.titulo }}</p>
@@ -246,13 +275,16 @@
                       <p class="text-[10px] text-gray-400 mt-1">{{ n.tiempo }}</p>
                     </div>
                     <span v-if="!n.leida" class="w-2 h-2 bg-green-500 rounded-full shrink-0 mt-1.5"></span>
-                  </div> -->
+                  </div>
                 </div>
 
                 <!-- Footer -->
                 <div class="px-4 py-2.5 border-t border-gray-50 text-center">
-                  <button class="text-xs text-green-600 hover:text-green-700 font-medium transition">
-                    Ver todas las notificaciones →
+                  <button
+                    @click="notifStore.limpiar()"
+                    class="text-xs text-gray-400 hover:text-gray-600 font-medium transition"
+                  >
+                    Limpiar todas →
                   </button>
                 </div>
               </div>
@@ -297,9 +329,13 @@
                   <p class="text-sm font-semibold text-gray-800">{{ authStore.user?.nombre }}</p>
                   <p class="text-xs text-gray-400 capitalize">{{ authStore.user?.rol }}</p>
                 </div>
-                <!-- <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                <NuxtLink
+                  to="/perfil"
+                  class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+                  @click="showUserMenu = false"
+                >
                   <UserCircleIcon class="w-4 h-4" /> Mi perfil
-                </button> -->
+                </NuxtLink>
                 <!-- <button class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
                   <Cog6ToothIcon class="w-4 h-4" /> Configuración
                 </button> -->
@@ -319,7 +355,7 @@
       </header>
 
       <!-- ── PAGE CONTENT ── -->
-      <main class="flex-1 p-6 overflow-auto">
+      <main class="flex-1 p-4 lg:p-6 overflow-auto">
         <slot />
       </main>
 
@@ -334,6 +370,7 @@ import { useAuthStore } from '~/stores/auth'
 import { useAulaStore } from '#imports'
 import { useCursoStore } from '#imports'
 import { useSesionStore } from '#imports'
+import { useNotificacionesStore } from '~/stores/notificaciones'
 
 
 import {
@@ -350,8 +387,11 @@ import {
   ChevronDownIcon,
   UserCircleIcon,
   CheckCircleIcon,
+  CheckBadgeIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
+  Bars3Icon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline'
 
 const { $supabase } = useNuxtApp()
@@ -363,6 +403,10 @@ const authStore = useAuthStore()
 const aulaStore = useAulaStore()
 const cursoStore = useCursoStore()
 const sesionStore = useSesionStore()
+const notifStore = useNotificacionesStore()
+
+// ── state ─────────────────────────────────
+const mobileMenuOpen = ref(false)
 
 // ── computed ──────────────────────────────
 const esDocente = computed(() => authStore.user?.rol === 'Docente')
@@ -377,6 +421,8 @@ const pageTitle = computed(() => {
     '/sesiones': 'Sesiones',
     '/salas': 'Salas de reuniones (Ko Eduko Room)',
     '/curso': 'Cursos y sesiones',
+    '/calificaciones': 'Calificaciones',
+    '/perfil': 'Mi Perfil',
   }
   return map[route.path] ?? 'Ko Eduko'
 })
@@ -398,71 +444,32 @@ async function logout() {
 }
 
 // ── notifications ─────────────────────────
-interface Notif {
-  id: number
-  titulo: string
-  descripcion: string
-  tiempo: string
-  leida: boolean
-  icon: any
-  color: string
-}
-
 const showNotif = ref(false)
 const notifRef = ref<HTMLElement | null>(null)
 
-const notificaciones = ref<Notif[]>([
-  {
-    id: 1,
-    titulo: 'Nueva sesión agendada',
-    descripcion: 'Matemáticas avanzadas · Mañana 10:00 AM',
-    tiempo: 'hace 5 min',
-    leida: false,
-    icon: CalendarDaysIcon,
-    color: 'bg-blue-100 text-blue-600',
-  },
-  {
-    id: 2,
-    titulo: 'Emparejamiento completado',
-    descripcion: '8 estudiantes fueron emparejados exitosamente',
-    tiempo: 'hace 20 min',
-    leida: false,
-    icon: BoltIcon,
-    color: 'bg-green-100 text-green-600',
-  },
-  {
-    id: 3,
-    titulo: 'Estudiante sin sesión',
-    descripcion: 'Carlos Ramos lleva 3 días sin actividad',
-    tiempo: 'hace 1 hora',
-    leida: false,
-    icon: ExclamationTriangleIcon,
-    color: 'bg-amber-100 text-amber-600',
-  },
-  {
-    id: 4,
-    titulo: 'Reporte disponible',
-    descripcion: 'El reporte semanal ya está listo para descargar',
-    tiempo: 'ayer',
-    leida: true,
-    icon: InformationCircleIcon,
-    color: 'bg-gray-100 text-gray-500',
-  },
-])
+const notifIcon: Record<string, any> = {
+  success: CheckBadgeIcon,
+  info: InformationCircleIcon,
+  warning: ExclamationTriangleIcon,
+  error: ExclamationTriangleIcon,
+}
 
-const unreadCount = computed(() => notificaciones.value.filter(n => !n.leida).length)
+function notifColor(n: { tipo: string }): string {
+  const map: Record<string, string> = {
+    success: 'bg-emerald-100 text-emerald-600',
+    info: 'bg-blue-100 text-blue-600',
+    warning: 'bg-amber-100 text-amber-600',
+    error: 'bg-red-100 text-red-600',
+  }
+  return map[n.tipo] ?? 'bg-gray-100 text-gray-500'
+}
 
 function toggleNotif() {
   showNotif.value = !showNotif.value
   showUserMenu.value = false
-}
-
-function marcarLeida(n: Notif) {
-  n.leida = true
-}
-
-function markAllRead() {
-  notificaciones.value.forEach(n => (n.leida = true))
+  if (showNotif.value) {
+    notifStore.actualizarTiempos()
+  }
 }
 
 // ── user menu ─────────────────────────────

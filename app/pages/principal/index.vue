@@ -2,57 +2,57 @@
   <div class="space-y-6">
 
     <!-- Tarjeta de bienvenida -->
-    <div class="bg-white rounded-2xl shadow p-6 flex items-center justify-between gap-4">
+    <div class="bg-white rounded-2xl shadow p-4 lg:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       
-      <div class="flex items-center gap-4">
-        <div class="w-16 h-16 rounded-full bg-[#2f4f4f] flex items-center justify-center text-white text-2xl font-bold">
+      <div class="flex items-center gap-3 lg:gap-4">
+        <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-[#2f4f4f] flex items-center justify-center text-white text-xl lg:text-2xl font-bold shrink-0">
           {{ inicialNombre }}
         </div>
-        <div>
-          <h1 class="text-2xl font-bold text-[#264e49]">
-            Bienvenido, {{ authStore.user?.nombre }} 👋
+        <div class="min-w-0">
+          <h1 class="text-lg lg:text-2xl font-bold text-[#264e49] truncate">
+            Bienvenido, {{ authStore.user?.nombre }}
           </h1>
-          <p class="text-sm text-gray-500">{{ authStore.perfil?.instieducativo?.l_col }}</p>
+          <p class="text-xs lg:text-sm text-gray-500 truncate">{{ authStore.perfil?.instieducativo?.l_col }}</p>
         </div>
       </div>
 
       <!-- BOTONES SOLO PARA DOCENTE -->
-      <div v-if="esDocente" class="flex gap-3">
+      <div v-if="esDocente" class="flex flex-wrap gap-2 w-full sm:w-auto">
         <button
           @click="abrirEmparejamiento"
-          class="group relative px-5 py-2.5 bg-linear-to-r from-purple-500 to-indigo-600 rounded-xl text-white font-semibold text-sm overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          class="group relative flex-1 sm:flex-none px-4 lg:px-5 py-2 lg:py-2.5 bg-linear-to-r from-purple-500 to-indigo-600 rounded-xl text-white font-semibold text-xs lg:text-sm overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg"
         >
           <div class="absolute inset-0 bg-linear-to-r from-purple-600 to-indigo-700 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          <div class="relative flex items-center gap-2">
-            <SparklesIcon class="w-5 h-5 animate-pulse" />
-            <span>🤖 Herramienta IA</span>
+          <div class="relative flex items-center gap-1.5 lg:gap-2 justify-center">
+            <SparklesIcon class="w-4 h-4 lg:w-5 lg:h-5 animate-pulse" />
+            <span>Herramienta IA</span>
           </div>
         </button>
 
         <button
           @click="abrirBI"
-          class="group relative px-5 py-2.5 bg-linear-to-r from-emerald-500 to-teal-600 rounded-xl text-white font-semibold text-sm overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          class="group relative flex-1 sm:flex-none px-4 lg:px-5 py-2 lg:py-2.5 bg-linear-to-r from-emerald-500 to-teal-600 rounded-xl text-white font-semibold text-xs lg:text-sm overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg"
         >
           <div class="absolute inset-0 bg-linear-to-r from-emerald-600 to-teal-700 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          <div class="relative flex items-center gap-2">
-            <ChartBarIcon class="w-5 h-5 animate-bounce" />
-            <span>📊 Business Intelligence</span>
+          <div class="relative flex items-center gap-1.5 lg:gap-2 justify-center">
+            <ChartBarIcon class="w-4 h-4 lg:w-5 lg:h-5 animate-bounce" />
+            <span>Business Intelligence</span>
           </div>
         </button>
       </div>
     </div>
 
     <!-- Info personal -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-5">
         <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Nombre completo</p>
-        <p class="text-gray-800 font-semibold text-sm">
+        <p class="text-gray-800 font-semibold text-xs lg:text-sm truncate">
           {{ authStore.perfil?.l_nom }}
           {{ authStore.perfil?.l_apellp }}
           {{ authStore.perfil?.l_apellm }}
         </p>
       </div>
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-5">
         <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Rol</p>
         <span
           :class="[
@@ -63,9 +63,9 @@
           {{ authStore.perfil?.rol?.l_rol }}
         </span>
       </div>
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-5">
         <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Institución</p>
-        <p class="text-gray-800 font-semibold text-sm">
+        <p class="text-gray-800 font-semibold text-xs lg:text-sm truncate">
           {{ authStore.perfil?.instieducativo?.l_col }}
         </p>
       </div>
@@ -230,7 +230,47 @@
     <!-- SECCIONES DE MÉTRICAS (SOLO DOCENTE)          -->
     <!-- ============================================= -->
     <div v-if="esDocente && aulaStore.seleccionCompleta">
-      
+
+      <!-- Herramientas rápidas -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <NuxtLink to="/estudiantes"
+          class="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all group"
+        >
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition">
+            <UsersIcon class="w-5 h-5 text-blue-500" />
+          </div>
+          <span class="text-xs font-semibold text-gray-600 group-hover:text-gray-800">Estudiantes</span>
+          <span class="text-[10px] text-gray-400 -mt-1">Gestionar notas</span>
+        </NuxtLink>
+        <NuxtLink to="/curso"
+          class="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all group"
+        >
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition">
+            <BookOpenIcon class="w-5 h-5 text-emerald-500" />
+          </div>
+          <span class="text-xs font-semibold text-gray-600 group-hover:text-gray-800">Cursos</span>
+          <span class="text-[10px] text-gray-400 -mt-1">Crear sesiones</span>
+        </NuxtLink>
+        <NuxtLink to="/salas"
+          class="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all group"
+        >
+          <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center group-hover:bg-violet-100 transition">
+            <VideoCameraIcon class="w-5 h-5 text-violet-500" />
+          </div>
+          <span class="text-xs font-semibold text-gray-600 group-hover:text-gray-800">Salas</span>
+          <span class="text-[10px] text-gray-400 -mt-1">Reuniones virtuales</span>
+        </NuxtLink>
+        <NuxtLink to="/emparejamiento"
+          class="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all group"
+        >
+          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition">
+            <BoltIcon class="w-5 h-5 text-amber-500" />
+          </div>
+          <span class="text-xs font-semibold text-gray-600 group-hover:text-gray-800">IA</span>
+          <span class="text-[10px] text-gray-400 -mt-1">Emparejar alumnos</span>
+        </NuxtLink>
+      </div>
+
       <!-- Estadísticas rápidas -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white shadow-lg">
@@ -336,84 +376,75 @@
     <!-- ============================================= -->
     <!-- MODAL BUSINESS INTELLIGENCE                    -->
     <!-- ============================================= -->
-    <div v-if="modalBIActive" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @click.self="cerrarBI">
+    <div v-if="modalBIActive" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4" @click.self="cerrarBI">
       <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
-          <div class="flex items-center gap-2">
-            <ChartBarIcon class="w-6 h-6 text-emerald-500" />
-            <h2 class="text-xl font-bold text-gray-800">Business Intelligence</h2>
+        <div class="sticky top-0 bg-white border-b p-3 sm:p-4 flex justify-between items-center">
+          <div class="flex items-center gap-2 min-w-0">
+            <ChartBarIcon class="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 shrink-0" />
+            <h2 class="text-base sm:text-xl font-bold text-gray-800 truncate">Business Intelligence</h2>
           </div>
-          <!-- <div class="flex items-center gap-2">
-            <button 
-              @click="exportarPDF"
-              class="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm hover:bg-red-100 transition"
-            >
-              <DocumentArrowDownIcon class="w-4 h-4" />
-              Exportar PDF
-            </button>
-            <button @click="cerrarBI" class="text-gray-400 hover:text-gray-600 transition">
-              <XMarkIcon class="w-6 h-6" />
-            </button>
-          </div> -->
+          <button @click="cerrarBI" class="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition shrink-0 ml-2">
+            <XMarkIcon class="w-5 h-5" />
+          </button>
         </div>
         
-        <div id="reporteBI" class="p-6">
-          <div class="space-y-6">
+        <div id="reporteBI" class="p-4 sm:p-6">
+          <div class="space-y-4 sm:space-y-6">
             
-            <div class="text-center border-b pb-4 mb-4">
-              <h2 class="text-2xl font-bold text-gray-800">Reporte de Rendimiento Académico</h2>
-              <p class="text-gray-500">{{ authStore.perfil?.instieducativo?.l_col }}</p>
-              <p class="text-xs text-gray-400">Generado: {{ new Date().toLocaleDateString() }}</p>
+            <div class="text-center border-b pb-3 sm:pb-4 mb-3 sm:mb-4">
+              <h2 class="text-lg sm:text-2xl font-bold text-gray-800">Reporte de Rendimiento Académico</h2>
+              <p class="text-xs sm:text-sm text-gray-500 truncate">{{ authStore.perfil?.instieducativo?.l_col }}</p>
+              <p class="text-[10px] sm:text-xs text-gray-400">Generado: {{ new Date().toLocaleDateString() }}</p>
             </div>
 
-            <div class="flex justify-between items-center">
-              <p class="text-sm text-gray-500">Métricas y análisis de rendimiento</p>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <p class="text-xs sm:text-sm text-gray-500">Métricas y análisis de rendimiento</p>
               <button 
                 @click="cargarMetricasBI"
-                class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-sm hover:bg-emerald-100 transition"
+                class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-xs sm:text-sm hover:bg-emerald-100 transition self-end sm:self-auto"
               >
-                <ArrowPathIcon class="w-4 h-4" :class="{ 'animate-spin': cargandoBI }" />
+                <ArrowPathIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4" :class="{ 'animate-spin': cargandoBI }" />
                 Actualizar
               </button>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div class="bg-emerald-50 rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold text-emerald-600">{{ metricasBI.totalAlumnos }}</p>
-                <p class="text-xs text-gray-500">Total Alumnos</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+              <div class="bg-emerald-50 rounded-xl p-3 sm:p-4 text-center">
+                <p class="text-xl sm:text-2xl font-bold text-emerald-600">{{ metricasBI.totalAlumnos }}</p>
+                <p class="text-[10px] sm:text-xs text-gray-500">Total Alumnos</p>
               </div>
-              <div class="bg-blue-50 rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold text-blue-600">{{ metricasBI.promedioGeneral }}</p>
-                <p class="text-xs text-gray-500">Promedio General</p>
+              <div class="bg-blue-50 rounded-xl p-3 sm:p-4 text-center">
+                <p class="text-xl sm:text-2xl font-bold text-blue-600">{{ metricasBI.promedioGeneral }}</p>
+                <p class="text-[10px] sm:text-xs text-gray-500">Promedio General</p>
               </div>
-              <div class="bg-orange-50 rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold text-orange-600">{{ metricasBI.tasaAprobacion }}%</p>
-                <p class="text-xs text-gray-500">Tasa Aprobación</p>
+              <div class="bg-orange-50 rounded-xl p-3 sm:p-4 text-center">
+                <p class="text-xl sm:text-2xl font-bold text-orange-600">{{ metricasBI.tasaAprobacion }}%</p>
+                <p class="text-[10px] sm:text-xs text-gray-500">Tasa Aprobación</p>
               </div>
-              <div class="bg-purple-50 rounded-xl p-4 text-center">
-                <p class="text-sm font-bold text-purple-600 truncate">{{ metricasBI.mejorRendimiento }}</p>
-                <p class="text-xs text-gray-500">Mejor Rendimiento</p>
+              <div class="bg-purple-50 rounded-xl p-3 sm:p-4 text-center">
+                <p class="text-xs sm:text-sm font-bold text-purple-600 truncate">{{ metricasBI.mejorRendimiento }}</p>
+                <p class="text-[10px] sm:text-xs text-gray-500">Mejor Rendimiento</p>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div class="bg-gray-50 rounded-xl p-4 border">
-                <h3 class="text-sm font-semibold text-gray-700 mb-4">📈 Rendimiento por Alumno</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div class="bg-gray-50 rounded-xl p-3 sm:p-4 border">
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4">Rendimiento por Alumno</h3>
                 <canvas ref="rendimientoChartRef"></canvas>
               </div>
 
-              <div class="bg-gray-50 rounded-xl p-4 border">
-                <h3 class="text-sm font-semibold text-gray-700 mb-4">📊 Distribución de Notas</h3>
+              <div class="bg-gray-50 rounded-xl p-3 sm:p-4 border">
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4">Distribución de Notas</h3>
                 <canvas ref="distribucionChartRef"></canvas>
               </div>
 
-              <div class="bg-gray-50 rounded-xl p-4 border">
-                <h3 class="text-sm font-semibold text-gray-700 mb-4">🎯 Promedios por Curso</h3>
+              <div class="bg-gray-50 rounded-xl p-3 sm:p-4 border">
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4">Promedios por Curso</h3>
                 <canvas ref="cursosChartRef"></canvas>
               </div>
 
-              <div class="bg-gray-50 rounded-xl p-4 border">
-                <h3 class="text-sm font-semibold text-gray-700 mb-4">📋 Resumen General</h3>
+              <div class="bg-gray-50 rounded-xl p-3 sm:p-4 border">
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-700 mb-3 sm:mb-4">Resumen General</h3>
                 <div class="overflow-x-auto">
                   <table class="w-full text-sm">
                     <thead class="bg-gray-100">
@@ -445,7 +476,7 @@
               </div>
             </div>
             
-            <div class="text-center text-xs text-gray-400 border-t pt-4 mt-4">
+            <div class="text-center text-[10px] sm:text-xs text-gray-400 border-t pt-3 sm:pt-4 mt-3 sm:mt-4">
               Reporte generado automáticamente por el sistema de gestión educativa
             </div>
           </div>
@@ -476,6 +507,9 @@ import {
   XMarkIcon,
   ClockIcon,
   DocumentArrowDownIcon,
+  UsersIcon,
+  VideoCameraIcon,
+  BoltIcon,
 } from '@heroicons/vue/24/outline'
 
 // Chart.js

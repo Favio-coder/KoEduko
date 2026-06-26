@@ -96,135 +96,138 @@
     <!-- TABLA -->
     <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-      <!-- Cabecera de la tabla -->
-      <div
-        class="grid items-center px-6 py-4 bg-gray-50/80 border-b border-gray-100 text-[11px] font-bold uppercase tracking-widest text-gray-400"
-        :style="gridCols"
-      >
-        <span class="text-center">#</span>
-        <span>Estudiante</span>
-        <span
-          v-for="campo in camposActivos"
-          :key="campo.key"
-          class="text-center"
-        >
-          {{ campo.label }}
-        </span>
-        <span class="text-right pr-6">Promedio</span>
-        <span class="text-center" v-if="esDocente">Acción</span>
-      </div>
-
-      <!-- Filas -->
-      <div class="divide-y divide-gray-50">
+      <!-- Contenedor scrollable horizontal -->
+      <div class="overflow-x-auto">
+        <!-- Cabecera de la tabla -->
         <div
-          v-for="(est, index) in estudiantesFiltrados"
-          :key="est.c_usua"
-          class="grid items-center px-6 py-4 hover:bg-gray-50/50 transition-colors group"
+          class="grid items-center px-4 lg:px-6 py-4 bg-gray-50/80 border-b border-gray-100 text-[11px] font-bold uppercase tracking-widest text-gray-400 min-w-[700px]"
           :style="gridCols"
         >
-          <!-- Posición / ranking -->
-          <div class="flex justify-center">
-            <span v-if="index === 0" class="text-2xl">🥇</span>
-            <span v-else-if="index === 1" class="text-2xl">🥈</span>
-            <span v-else-if="index === 2" class="text-2xl">🥉</span>
-            <span v-else class="text-sm font-bold text-gray-400 w-7 h-7 flex items-center justify-center">
-              {{ index + 1 }}
-            </span>
-          </div>
-
-          <!-- Avatar + Nombre -->
-          <div class="flex items-center gap-3 min-w-0">
-            <div
-              :class="['w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0', avatarColor(est.nombre_completo)]"
-            >
-              {{ inicial(est.nombre_completo) }}
-            </div>
-            <div class="min-w-0">
-              <p class="text-sm font-semibold text-gray-800 truncate">{{ est.nombre_completo }}</p>
-              <p class="text-[10px] text-gray-400 truncate">{{ est.email || 'Estudiante' }}</p>
-            </div>
-          </div>
-
-          <!-- Campos dinámicos de notas -->
-          <div
+          <span class="text-center">#</span>
+          <span>Estudiante</span>
+          <span
             v-for="campo in camposActivos"
             :key="campo.key"
-            class="flex justify-center"
+            class="text-center"
           >
-            <template v-if="editandoId === est.c_usua">
-              <input
-                v-model.number="editForm[campo.key]"
-                type="number" min="0" max="20" step="0.5"
-                class="w-16 text-center text-sm border border-emerald-300 rounded-lg py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-              />
-            </template>
-            <template v-else>
-              <span :class="getNotaClase(est.notas?.[campo.key])">
-                {{ formatNota(est.notas?.[campo.key]) }}
+            {{ campo.label }}
+          </span>
+          <span class="text-right pr-6">Promedio</span>
+          <span class="text-center" v-if="esDocente">Acción</span>
+        </div>
+
+        <!-- Filas -->
+        <div class="divide-y divide-gray-50 min-w-[700px]">
+          <div
+            v-for="(est, index) in estudiantesFiltrados"
+            :key="est.c_usua"
+            class="grid items-center px-4 lg:px-6 py-4 hover:bg-gray-50/50 transition-colors group"
+            :style="gridCols"
+          >
+            <!-- Posición / ranking -->
+            <div class="flex justify-center">
+              <span v-if="index === 0" class="text-xl lg:text-2xl">🥇</span>
+              <span v-else-if="index === 1" class="text-xl lg:text-2xl">🥈</span>
+              <span v-else-if="index === 2" class="text-xl lg:text-2xl">🥉</span>
+              <span v-else class="text-sm font-bold text-gray-400 w-7 h-7 flex items-center justify-center">
+                {{ index + 1 }}
               </span>
-            </template>
-          </div>
+            </div>
 
-          <!-- Promedio - Alineado a la derecha -->
-          <div class="flex justify-end pr-6">
-            <span
-              v-if="editandoId === est.c_usua"
-              :class="['text-sm font-bold px-3 py-1 rounded-full', promedioClase(promedioEditando)]"
-            >
-              {{ promedioEditando.toFixed(1) }}
-            </span>
-            <span
-              v-else
-              :class="['text-sm font-bold px-3 py-1 rounded-full', promedioClase(promedio(est))]"
-            >
-              {{ tieneNotas(est) ? promedio(est).toFixed(1) : '—' }}
-            </span>
-          </div>
-
-          <!-- Acción (solo docente) -->
-          <div v-if="esDocente" class="flex justify-center">
-            <template v-if="editandoId === est.c_usua">
-              <div class="flex items-center gap-2">
-                <button
-                  @click="confirmarGuardar(est)"
-                  :disabled="guardando"
-                  class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white text-[11px] font-semibold rounded-lg transition whitespace-nowrap"
-                >
-                  <ArrowPathIcon v-if="guardando" class="w-3.5 h-3.5 animate-spin" />
-                  <CheckIcon v-else class="w-3.5 h-3.5" />
-                  Guardar
-                </button>
-                <button
-                  @click="cancelarEdicion"
-                  class="px-3 py-1.5 text-[11px] text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition whitespace-nowrap"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </template>
-            <template v-else>
-              <button
-                @click="iniciarEdicion(est)"
-                class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-3 py-1.5 text-[11px] text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-lg transition"
+            <!-- Avatar + Nombre -->
+            <div class="flex items-center gap-2 lg:gap-3 min-w-0">
+              <div
+                :class="['w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center text-xs lg:text-sm font-bold text-white shrink-0', avatarColor(est.nombre_completo)]"
               >
-                <PencilIcon class="w-3.5 h-3.5" />
-                Editar
-              </button>
-            </template>
-          </div>
+                {{ inicial(est.nombre_completo) }}
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs lg:text-sm font-semibold text-gray-800 truncate">{{ est.nombre_completo }}</p>
+                <p class="text-[10px] text-gray-400 truncate hidden sm:block">{{ est.email || 'Estudiante' }}</p>
+              </div>
+            </div>
 
+            <!-- Campos dinámicos de notas -->
+            <div
+              v-for="campo in camposActivos"
+              :key="campo.key"
+              class="flex justify-center"
+            >
+              <template v-if="editandoId === est.c_usua">
+                <input
+                  v-model.number="editForm[campo.key]"
+                  type="number" min="0" max="20" step="0.5"
+                  class="w-14 lg:w-16 text-center text-sm border border-emerald-300 rounded-lg py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                />
+              </template>
+              <template v-else>
+                <span :class="getNotaClase(est.notas?.[campo.key])">
+                  {{ formatNota(est.notas?.[campo.key]) }}
+                </span>
+              </template>
+            </div>
+
+            <!-- Promedio -->
+            <div class="flex justify-end pr-4 lg:pr-6">
+              <span
+                v-if="editandoId === est.c_usua"
+                :class="['text-sm font-bold px-2 lg:px-3 py-1 rounded-full', promedioClase(promedioEditando)]"
+              >
+                {{ promedioEditando.toFixed(1) }}
+              </span>
+              <span
+                v-else
+                :class="['text-sm font-bold px-2 lg:px-3 py-1 rounded-full', promedioClase(promedio(est))]"
+              >
+                {{ tieneNotas(est) ? promedio(est).toFixed(1) : '—' }}
+              </span>
+            </div>
+
+            <!-- Acción (solo docente) -->
+            <div v-if="esDocente" class="flex justify-center">
+              <template v-if="editandoId === est.c_usua">
+                <div class="flex items-center gap-1.5 lg:gap-2">
+                  <button
+                    @click="confirmarGuardar(est)"
+                    :disabled="guardando"
+                    class="flex items-center gap-1 px-2 lg:px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white text-[11px] font-semibold rounded-lg transition whitespace-nowrap"
+                  >
+                    <ArrowPathIcon v-if="guardando" class="w-3 h-3 lg:w-3.5 lg:h-3.5 animate-spin" />
+                    <CheckIcon v-else class="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                    <span class="hidden sm:inline">Guardar</span>
+                  </button>
+                  <button
+                    @click="cancelarEdicion"
+                    class="px-2 lg:px-3 py-1.5 text-[11px] text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition whitespace-nowrap"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </template>
+              <template v-else>
+                <button
+                  @click="iniciarEdicion(est)"
+                  class="opacity-0 group-hover:opacity-100 flex items-center gap-1 px-2 lg:px-3 py-1.5 text-[11px] text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-lg transition"
+                >
+                  <PencilIcon class="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                  <span class="hidden sm:inline">Editar</span>
+                </button>
+              </template>
+            </div>
+
+          </div>
         </div>
       </div>
 
       <!-- Footer con stats -->
-      <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+      <div class="px-4 lg:px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <p class="text-[11px] text-gray-400">
           {{ estudiantesFiltrados.length }} estudiante{{ estudiantesFiltrados.length !== 1 ? 's' : '' }}
           <template v-if="busqueda"> · filtrado{{ estudiantesFiltrados.length !== 1 ? 's' : '' }}</template>
         </p>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 lg:gap-3">
           <span class="text-[11px] text-gray-400">Promedio del curso:</span>
-          <span :class="['text-sm font-bold px-3 py-1 rounded-full', promedioClase(promedioCurso)]">
+          <span :class="['text-sm font-bold px-2 lg:px-3 py-1 rounded-full', promedioClase(promedioCurso)]">
             {{ promedioCurso > 0 ? promedioCurso.toFixed(1) : '—' }}
           </span>
         </div>
@@ -243,6 +246,7 @@ import { useCursoStore } from '#imports'
 import { useListCursos } from '~/composable/curso/useListCursos'
 import { withLoading } from '~/utils/withLoading'
 import { gestionarAtributos, type NotaAlumno } from '~/services/notas/gestionarAtributos'
+import { useNotificaciones } from '~/composable/notificaciones/useNotificaciones'
 
 import {
   BookOpenIcon, ChevronDownIcon, MagnifyingGlassIcon, XMarkIcon,
@@ -274,6 +278,7 @@ const authStore  = useAuthStore()
 const aulaStore  = useAulaStore()
 const cursoStore = useCursoStore()
 const esDocente  = computed(() => authStore.user?.rol === 'Docente')
+const { notificarNotasActualizadas } = useNotificaciones()
 
 const { listCursos } = useListCursos()
 
@@ -465,6 +470,12 @@ async function guardarNotas(est: NotaAlumno) {
     if (resultado.ok) {
       await cargarEstudiantes()
       editandoId.value = null
+
+      const curso = cursos.value.find(c => c.c_curso === cursoSeleccionadoId.value)
+      if (curso) {
+        notificarNotasActualizadas(curso.l_curso, 1)
+      }
+
       await $swal.fire({ title: '¡Guardado!', text: 'Las notas se han guardado correctamente', icon: 'success', timer: 1500, showConfirmButton: false })
     } else {
       throw new Error(resultado.mensaje || 'Error al guardar')
@@ -484,14 +495,17 @@ watch(cursoSeleccionadoId, async () => {
 })
 
 // Lifecycle
-// onMounted(async () => {
-//   try {
-//     await withLoading(() => listCursos())
-//     if (cursos.value.length > 0) {
-//       cursoSeleccionadoId.value = cursos.value[0].c_curso
-//     }
-//   } catch (e) { 
-//     console.error(e) 
-//   }
-// })
+onMounted(async () => {
+  try {
+    if (aulaStore.aulaActual?.c_aula) {
+      await withLoading(() => listCursos())
+      if (cursos.value.length > 0 && !cursoSeleccionadoId.value) {
+        const primerCurso = cursos.value[0]
+        if (primerCurso) cursoSeleccionadoId.value = primerCurso.c_curso
+      }
+    }
+  } catch (e) { 
+    console.error(e) 
+  }
+})
 </script>

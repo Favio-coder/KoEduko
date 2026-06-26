@@ -1,8 +1,8 @@
 import type { Curso } from "~/types/curso"
 
-// Store
 import { useAulaStore } from '~/stores/aula'
-import { useCursoStore} from "#imports"
+import { useCursoStore } from "#imports"
+import { useNotificaciones } from "~/composable/notificaciones/useNotificaciones"
 
 import { grabCurso as grabCursoService } from "~/services/cursos/crearCurso"
 
@@ -12,6 +12,7 @@ export function useGrabCurso() {
 
     const aulaStore = useAulaStore()
     const cursoStore = useCursoStore()
+    const { notificarCursoCreado } = useNotificaciones()
 
     const loading = ref(false)
     const error = ref<string | null>(null)
@@ -38,6 +39,8 @@ export function useGrabCurso() {
             const cursoSub: any = curso?.[0]
 
             cursoStore.addCurso(cursoSub)
+
+            notificarCursoCreado(cursoSub.l_curso)
 
             return curso
 

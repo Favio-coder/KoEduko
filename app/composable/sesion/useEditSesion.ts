@@ -1,17 +1,17 @@
 import type { CrearSesionDTO } from '~/types/sesionDTO'
 import type { Sesion } from '~/types/sesion'
 
-// Store
 import { useSesionStore } from '#imports'
 
-// Service
 import { editSesion as editSesionServices } from '~/services/sesion/editarSesion'
+import { useNotificaciones } from '~/composable/notificaciones/useNotificaciones'
 
 export function useEditSesion() {
 
   const { $supabase } = useNuxtApp()
 
   const sesionStore = useSesionStore()
+  const { notificarSesionEditada } = useNotificaciones()
 
   const loading = ref(false)
 
@@ -28,9 +28,6 @@ export function useEditSesion() {
 
     try {
 
-      /**
-       * Editar sesión + subir nuevos archivos
-       */
       const sesionActualizada = await editSesionServices(
 
         $supabase,
@@ -41,9 +38,6 @@ export function useEditSesion() {
 
       )
 
-      /**
-       * Actualizar store
-       */
       sesionStore.updateSesion(
 
         c_sesion,
@@ -51,6 +45,8 @@ export function useEditSesion() {
         sesionActualizada
 
       )
+
+      notificarSesionEditada(sesionActualizada.l_sesion)
 
       return sesionActualizada
 
