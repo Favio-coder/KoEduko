@@ -3,7 +3,7 @@
     <div class="max-w-6xl mx-auto">
 
       <!-- Header -->
-      <div class="mb-8">
+      <div class="mb-6">
         <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
           <span class="bg-gradient-to-br from-green-600 to-emerald-700 text-white p-2 rounded-xl shadow-md inline-flex">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -13,8 +13,26 @@
         <p class="text-gray-500 mt-1 ml-12">Asigna calificativos (AD/A/B/C) y genera conclusiones descriptivas usando IA basada en el Currículo Nacional del Perú.</p>
       </div>
 
-      <!-- Step 1: Curso -->
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-4">
+      <!-- Tabs -->
+      <div class="flex gap-1 mb-6 bg-white rounded-2xl shadow-sm border border-gray-200 p-1.5">
+        <button @click="tabActivo = 'configuracion'"
+          :class="['flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all', tabActivo === 'configuracion' ? 'bg-green-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100']">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Configuración
+        </button>
+        <button @click="tabActivo = 'resultados'"
+          :disabled="Object.keys(resultadosPorCompetencia).length === 0"
+          :class="['flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all', tabActivo === 'resultados' ? 'bg-green-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed']">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          Resultados
+          <span v-if="totalResultados > 0" class="ml-1 bg-green-100 text-green-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full" :class="tabActivo === 'resultados' ? 'bg-white/25 text-white' : ''">{{ totalResultados }}</span>
+        </button>
+      </div>
+
+      <!-- Configuración Tab -->
+      <template v-if="tabActivo === 'configuracion'">
+        <!-- Step 1: Curso -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-4">
         <div class="flex items-center gap-2 mb-4">
           <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold">1</span>
           <h2 class="text-lg font-semibold text-gray-800">Seleccionar Curso</h2>
@@ -146,9 +164,10 @@
         </template>
       </template>
     </template>
+      </template>
 
-      <!-- Step 6: Resultados -->
-      <template v-if="Object.keys(resultadosPorCompetencia).length > 0">
+      <!-- Resultados Tab -->
+      <template v-if="tabActivo === 'resultados'">
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-4">
           <div class="flex items-center gap-2 mb-4">
             <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold">6</span>
@@ -162,8 +181,8 @@
                 <tr class="bg-gray-50">
                   <th class="text-left px-3 py-2 font-medium text-gray-600 whitespace-nowrap">Nombres y apellidos</th>
                   <template v-for="(comp, ci) in competenciasSeleccionadas" :key="ci">
-                    <th class="px-2 py-2 font-medium text-gray-600 text-center w-16">NL</th>
-                    <th class="px-2 py-2 font-medium text-gray-600 text-left min-w-[280px]">Conclusión Descriptiva de la competencia</th>
+                    <th class="px-2 py-2 font-medium text-gray-600 text-center w-16">{{ competencias[comp]?.nombre }}<br><span class="text-[10px] font-normal">NL</span></th>
+                    <th class="px-2 py-2 font-medium text-gray-600 text-left min-w-[280px]">Conclusión Descriptiva</th>
                   </template>
                 </tr>
               </thead>
@@ -192,11 +211,28 @@
               <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-blue-200 border border-blue-400"></span> B: En proceso</span>
               <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-red-200 border border-red-400"></span> C: En inicio</span>
             </div>
+            <button @click="mostrarExportModal = true"
+              class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+              Vista previa Excel
+            </button>
           </div>
         </div>
       </template>
 
     </div>
+
+    <ExportarExcelSiagie
+      v-model="mostrarExportModal"
+      :estudiantes="estudiantes"
+      :resultadosPorCompetencia="resultadosPorCompetencia"
+      :competencias="competencias"
+      :competenciasSeleccionadas="competenciasSeleccionadas"
+      :areaSeleccionada="areaSeleccionada"
+      :gradoText="gradoText"
+      :nivelSeleccionado="nivelSeleccionado"
+      :cursoSeleccionado="cursoSeleccionado"
+    />
   </div>
 </template>
 
@@ -204,6 +240,7 @@
 import { ref, computed } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { obtenerAreas, obtenerCompetencias } from '~/services/gemini/generarCalificativo'
+import ExportarExcelSiagie from '~/components/ExportarExcelSiagie.vue'
 
 definePageMeta({
   layout: 'dashboard',
@@ -243,6 +280,12 @@ const estudiantes = ref<Estudiante[]>([])
 const resultadosPorCompetencia = ref<{ [compIndex: number]: Resultado[] }>({})
 const generando = ref(false)
 const gradoError = ref(false)
+const tabActivo = ref('configuracion')
+const mostrarExportModal = ref(false)
+
+const totalResultados = computed(() =>
+  Object.values(resultadosPorCompetencia.value).reduce((sum, arr) => sum + arr.length, 0)
+)
 
 const atributosDisponibles = [
   'Resolvió correctamente',
@@ -289,6 +332,7 @@ function onCursoChange() {
   resultadosPorCompetencia.value = {}
   atributosSeleccionados.value = {}
   evidencias.value = {}
+  tabActivo.value = 'configuracion'
 }
 
 function onSelectArea(area: string) {
@@ -465,6 +509,7 @@ ${estudiantesTexto}`
 
   const total = Object.values(resultadosPorCompetencia.value).reduce((sum, arr) => sum + arr.length, 0)
   if (total > 0) {
+    tabActivo.value = 'resultados'
     await $swal.fire({ title: '¡Completado!', text: `Se generaron ${total} calificativos`, icon: 'success', timer: 2000, showConfirmButton: false })
   }
   generando.value = false

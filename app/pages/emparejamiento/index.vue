@@ -205,6 +205,7 @@ import { useCursoStore } from '#imports'
 import { useListCursos } from '~/composable/curso/useListCursos'
 import { withLoading } from '~/utils/withLoading'
 import { gestionarAtributos, type NotaAlumno } from '~/services/notas/gestionarAtributos'
+import { listarAtributos } from '~/services/atributos/listarAtributos'
 
 import {
   BookOpenIcon, ChevronDownIcon,
@@ -440,17 +441,20 @@ async function entrenarModelo() {
   entrenando.value = true
   
   try {
+    // Obtener atributos personalizados del curso
+    const atributosBD = await listarAtributos($supabase, cursoSeleccionadoId.value)
+    const atributos = atributosBD.length > 0
+      ? atributosBD.map(a => a.l_nombre)
+      : ['conocimiento', 'actitud', 'participacion', 'interes', 'estrella']
+    const pesos = atributosBD.length > 0
+      ? atributosBD.map(a => a.peso)
+      : undefined
+
     const alumnosData = estudiantes.value.map(est => ({
       c_usua: est.c_usua,
       nombre_completo: est.nombre_completo,
       email: est.email,
-      notas: est.notas || {
-        conocimiento: 0,
-        actitud: 0,
-        participacion: 0,
-        interes: 0,
-        estrella: 0
-      }
+      notas: est.notas || Object.fromEntries(atributos.map(a => [a, 0]))
     }))
 
     const response = await fetch(`${urlServer}/api/ia/train`, {
@@ -459,6 +463,8 @@ async function entrenarModelo() {
       body: JSON.stringify({
         curso_id: cursoSeleccionadoId.value,
         alumnos: alumnosData,
+        atributos,
+        pesos,
         iterations: 200
       })
     })

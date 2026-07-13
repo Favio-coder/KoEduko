@@ -39,7 +39,7 @@ export default defineNuxtConfig({
       googleid: process.env.GOOGLE_CLIENT_ID,
       googlesecret: process.env.GOOGLE_CLIENT_SECRET,
       googleredurl: process.env.GOOGLE_REDIRECT_URI,
-      urlserver: process.env.URL_SERVER
+      urlserver: process.env.NUXT_PUBLIC_URL_SERVER
     }
   }
 });
