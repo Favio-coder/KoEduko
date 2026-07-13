@@ -236,7 +236,7 @@ const posicionesCanvas = ref<{ x: number; y: number; estudiante: NotaAlumno; pro
 const cursos = computed(() => cursoStore.cursos)
 
 // Configuración del servidor
-const urlServer = $config.public.URL_SERVER || 'http://localhost:8000'
+const urlServer = $config.public.URL_SERVER || 'https://api-kopeer.onrender.com'
 
 // Canvas para el gráfo
 const grafoCanvas = ref<HTMLCanvasElement | null>(null)
