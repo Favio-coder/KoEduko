@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+import { createClient } from "@supabase/supabase-js";
 
 export default defineConfig({
   allowCypressEnv: false,
@@ -12,7 +13,36 @@ export default defineConfig({
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/e2e.js",
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      on('task', {
+        async loginSupabase({ email, password }) {
+          const supabaseUrl = 'https://uwkqhqosdqdlomvmszxb.supabase.co'
+          const supabaseKey = 'sb_publishable_yGf3lf1tMTlu7onK8CzYRg_k4GHntB8'
+          const supabase = createClient(supabaseUrl, supabaseKey)
+
+          const { data: { session }, error: authError } = await supabase.auth.signInWithPassword({ email, password })
+          if (authError) throw new Error(authError.message)
+
+          const { data: perfil, error: perfilError } = await supabase
+            .schema('core')
+            .from('usuarios')
+            .select(`
+              c_usua,
+              c_instanceId,
+              l_nom,
+              l_apellp,
+              l_apellm,
+              c_ie,
+              rol ( l_rol ),
+              instieducativo ( l_col )
+            `)
+            .eq('c_usua', session.user.id)
+            .single()
+
+          if (perfilError) throw new Error(perfilError.message)
+
+          return { session, perfil }
+        },
+      })
     },
   },
 

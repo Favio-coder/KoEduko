@@ -1,5 +1,6 @@
 <template>
-  <div class="flex h-screen overflow-hidden bg-gray-50">
+  <ClientOnly>
+    <div class="flex h-screen overflow-hidden bg-gray-50">
 
     <!-- Mobile overlay backdrop -->
     <Transition
@@ -82,8 +83,61 @@
           <span>Curso</span>
         </NuxtLink>
 
-        <!-- Estudiantes (solo docente) -->
+        <!-- Atributos (solo docente) -->
         <NuxtLink
+          v-if="esDocente"
+          to="/atributos"
+          @click="mobileMenuOpen = false"
+          :class="[
+            'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
+            isActive('/atributos')
+              ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
+              : 'text-white/70 hover:bg-white/8 hover:text-white'
+          ]"
+        >
+          <span v-if="isActive('/atributos')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <ClipboardDocumentCheckIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>Atributos</span>
+        </NuxtLink>
+
+        <!-- Calificaciones Beta (solo docente) -->
+        <NuxtLink
+          v-if="esDocente"
+          to="/calificaciones"
+          @click="mobileMenuOpen = false"
+          :class="[
+            'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
+            isActive('/calificaciones')
+              ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
+              : 'text-white/70 hover:bg-white/8 hover:text-white'
+          ]"
+        >
+          <span v-if="isActive('/calificaciones')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <AcademicCapIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>Calificaciones</span>
+          <!-- <span class="ml-auto text-[10px] bg-green-400/20 text-green-300 px-2 py-0.5 rounded-full font-semibold">Beta</span> -->
+        </NuxtLink>
+
+        <!-- SIAGIE (solo docente) -->
+        <NuxtLink
+          v-if="esDocente"
+          to="/siagie"
+          @click="mobileMenuOpen = false"
+          :class="[
+            'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
+            isActive('/siagie')
+              ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
+              : 'text-white/70 hover:bg-white/8 hover:text-white'
+          ]"
+        >
+          <span v-if="isActive('/siagie')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <DocumentTextIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>SIAGIE</span>
+          <span class="ml-auto text-[10px] bg-purple-400/20 text-purple-300 px-2 py-0.5 rounded-full font-semibold">IA</span>
+        </NuxtLink>
+
+        <!-- Estudiantes (solo docente) -->
+        <!-- <NuxtLink
           v-if="esDocente"
           to="/estudiantes"
           @click="mobileMenuOpen = false"
@@ -97,7 +151,7 @@
           <span v-if="isActive('/estudiantes')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <UsersIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Estudiantes</span>
-        </NuxtLink>
+        </NuxtLink> -->
 
         <!-- Calificativos (solo estudiante) -->
         <NuxtLink
@@ -197,7 +251,7 @@
           >
             <Bars3Icon class="w-5 h-5" />
           </button>
-          <h1 class="text-gray-800 font-semibold text-sm sm:text-base tracking-tight truncate max-w-[200px] sm:max-w-none">{{ pageTitle }}</h1>
+          <h1 class="text-gray-800 font-semibold text-sm sm:text-base tracking-tight truncate max-w-50 sm:max-w-none">{{ pageTitle }}</h1>
         </div>
 
         <!-- RIGHT: actions -->
@@ -362,6 +416,16 @@
     </div>
 
   </div>
+
+    <template #fallback>
+      <div class="flex h-screen items-center justify-center bg-gray-50">
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+          <p class="text-sm text-gray-500 font-medium">Cargando...</p>
+        </div>
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -388,6 +452,9 @@ import {
   UserCircleIcon,
   CheckCircleIcon,
   CheckBadgeIcon,
+  ClipboardDocumentCheckIcon,
+  AcademicCapIcon,
+  DocumentTextIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
   Bars3Icon,
@@ -422,6 +489,7 @@ const pageTitle = computed(() => {
     '/salas': 'Salas de reuniones (Ko Eduko Room)',
     '/curso': 'Cursos y sesiones',
     '/calificaciones': 'Calificaciones',
+    '/siagie': 'SIAGIE — Calificativos',
     '/perfil': 'Mi Perfil',
   }
   return map[route.path] ?? 'Ko Eduko'

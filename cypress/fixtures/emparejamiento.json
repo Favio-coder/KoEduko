@@ -1,0 +1,15 @@
+{
+  "cursos": [
+    { "c_curso": "CUR-001", "l_curso": "Matemáticas" },
+    { "c_curso": "CUR-002", "l_curso": "Comunicación" }
+  ],
+  "modeloStatus": {
+    "status": "trained",
+    "accuracy": 0.85
+  },
+  "emparejamientos": [
+    { "estudiante1": "Carlos Ramirez", "estudiante2": "Ana Lopez", "compatibilidad": 92 },
+    { "estudiante1": "Luis Martinez", "estudiante2": "Sofia Castro", "compatibilidad": 78 }
+  ],
+  "cursoSeleccionado": "CUR-001"
+}

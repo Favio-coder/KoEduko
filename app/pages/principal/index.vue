@@ -819,5 +819,8 @@ onMounted(() => {
   } else {
     cargarAulaAlumno()
   }
+  if (aulaActual.value?.c_aula) {
+    cargarMetricasBI()
+  }
 })
 </script>

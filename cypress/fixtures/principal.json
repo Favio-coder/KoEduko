@@ -1,0 +1,28 @@
+{
+  "docente": {
+    "nombre": "Maria Gonzalez Lopez",
+    "rol": "Docente",
+    "institucion": "Colegio Nacional Test",
+    "c_doc": "DOC-001",
+    "c_aula": "AULA-001",
+    "l_aula": "1° Secundaria A"
+  },
+  "estudiante": {
+    "nombre": "Carlos Ramirez Torres",
+    "rol": "Alumno",
+    "institucion": "Colegio Nacional Test",
+    "c_usua": "USR-001",
+    "c_aula": "AULA-001",
+    "l_aula": "1° Secundaria A"
+  },
+  "metricas": {
+    "totalAlumnos": 25,
+    "promedioGeneral": 15.5,
+    "tasaAprobacion": 85,
+    "mejorRendimiento": "Ana Lopez"
+  },
+  "instituciones": [
+    { "c_ie": "12345678", "l_col": "Colegio Nacional Test" },
+    { "c_ie": "87654321", "l_col": "Colegio Privado Test" }
+  ]
+}

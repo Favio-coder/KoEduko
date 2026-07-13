@@ -112,6 +112,8 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ middleware: 'guest' })
+
 import { useAuth } from '~/composable/auth/useAuth'
 
 

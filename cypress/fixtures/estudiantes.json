@@ -1,0 +1,16 @@
+{
+  "cursos": [
+    { "c_curso": "CUR-001", "l_curso": "Matemáticas" },
+    { "c_curso": "CUR-002", "l_curso": "Comunicación" }
+  ],
+  "alumnos": [
+    { "c_usua": "USR-001", "l_nom": "Carlos", "l_apellp": "Ramirez", "l_apellm": "Torres", "n_con": 16, "n_act": 14, "n_par": 15, "n_int": 13, "n_star": 0 },
+    { "c_usua": "USR-002", "l_nom": "Ana", "l_apellp": "Lopez", "l_apellm": "Garcia", "n_con": 18, "n_act": 17, "n_par": 16, "n_int": 15, "n_star": 0 },
+    { "c_usua": "USR-003", "l_nom": "Luis", "l_apellp": "Martinez", "l_apellm": "Perez", "n_con": 12, "n_act": 11, "n_par": 13, "n_int": 10, "n_star": 0 }
+  ],
+  "aulas": [
+    { "c_aula": "AULA-001", "l_aula": "1° Secundaria A", "c_grado": "GRADO-001" }
+  ],
+  "busqueda": "Carlos",
+  "nuevaNota": { "n_con": 17, "n_act": 15, "n_par": 16, "n_int": 14 }
+}

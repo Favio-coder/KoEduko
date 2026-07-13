@@ -966,7 +966,7 @@ async function eliminarCurso(cursoId: string) {
       .filter((path): path is string => Boolean(path))
       
     if (paths.length > 0) {
-      alert("Se va eliminar el archivo desde curso!!!!")
+      //alert("Se va eliminar el archivo desde curso!!!!")
 
       console.log("Paths: ", paths)
 

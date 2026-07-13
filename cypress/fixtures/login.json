@@ -1,0 +1,16 @@
+{
+  "institucion": {
+    "c_ie": "12345678",
+    "l_col": "Colegio Nacional Test"
+  },
+  "estudiante": {
+    "email": "estudiante@test.com",
+    "password": "EstudiantePass1!"
+  },
+  "docente": {
+    "email": "docente@test.com",
+    "password": "DocentePass1!"
+  },
+  "emailInvalido": "correo-sin-formato",
+  "passwordIncorrecta": "wrong-password-123"
+}

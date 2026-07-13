@@ -79,6 +79,8 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ middleware: 'guest' })
+
 import { appListInsEdu } from '~/composable/institucionesEducativas/appListInsEdu'
 import { useCreateUser } from '~/composable/auth/useCreateUser'
 import { obtenerContextoUsuario } from '~/services/usuario/obtenerContexto'
