@@ -46,7 +46,7 @@
       </div>
 
       <!-- NAV -->
-      <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+      <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto sidebar-scroll">
 
         <!-- Label section -->
         <p class="text-white/30 text-[10px] font-semibold uppercase tracking-widest px-3 mb-2">Menú</p>
@@ -81,6 +81,23 @@
           <span v-if="isActive('/curso')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
           <BookOpenIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Curso</span>
+        </NuxtLink>
+
+        <!-- Actividades (solo docente) -->
+        <NuxtLink
+          v-if="esDocente"
+          to="/actividades"
+          @click="mobileMenuOpen = false"
+          :class="[
+            'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
+            isActive('/actividades')
+              ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
+              : 'text-white/70 hover:bg-white/8 hover:text-white'
+          ]"
+        >
+          <span v-if="isActive('/actividades')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <ClipboardDocumentListIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>Actividades</span>
         </NuxtLink>
 
         <!-- Atributos (solo docente) -->
@@ -152,6 +169,23 @@
           <UsersIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
           <span>Estudiantes</span>
         </NuxtLink> -->
+
+        <!-- Mis Actividades (solo estudiante) -->
+        <NuxtLink
+          v-if="!esDocente"
+          to="/actividades"
+          @click="mobileMenuOpen = false"
+          :class="[
+            'group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium relative overflow-hidden',
+            isActive('/actividades')
+              ? 'bg-green-500 text-white shadow-lg shadow-green-900/40'
+              : 'text-white/70 hover:bg-white/8 hover:text-white'
+          ]"
+        >
+          <span v-if="isActive('/actividades')" class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-full opacity-60"></span>
+          <ClipboardDocumentListIcon class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+          <span>Mis Actividades</span>
+        </NuxtLink>
 
         <!-- Calificativos (solo estudiante) -->
         <NuxtLink
@@ -453,6 +487,7 @@ import {
   CheckCircleIcon,
   CheckBadgeIcon,
   ClipboardDocumentCheckIcon,
+  ClipboardDocumentListIcon,
   AcademicCapIcon,
   DocumentTextIcon,
   ExclamationTriangleIcon,
@@ -562,3 +597,19 @@ function handleClickOutside(e: MouseEvent) {
 onMounted(() => document.addEventListener('click', handleClickOutside))
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 </script>
+
+<style scoped>
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 99px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.25);
+}
+</style>
