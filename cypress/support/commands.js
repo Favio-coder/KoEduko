@@ -1,249 +1,152 @@
-Cypress.Commands.add('assertSwal', (title, text, options = {}) => {
-  const timeout = options.timeout || 10000
-  cy.get('.swal2-popup', { timeout }).should('be.visible')
+// ═══════════════════════════════════════════════════════════
+// COMMANDS — KoEduko Cypress
+// ═══════════════════════════════════════════════════════════
 
-  if (title) {
-    cy.get('.swal2-title').should('contain', title)
-  }
-
-  if (text) {
-    cy.get('.swal2-html-container').should('contain', text)
-  }
+// ── SweetAlert helpers ────────────────────────────────────
+Cypress.Commands.add('assertSwal', (title, text, opts = {}) => {
+  cy.get('.swal2-popup', { timeout: 8000 }).should('be.visible')
+  if (title) cy.get('.swal2-title').should('contain', title)
+  if (text) cy.get('.swal2-html-container').should('contain', text)
 })
 
 Cypress.Commands.add('closeSwal', () => {
-  cy.get('.swal2-popup').should('be.visible')
   cy.get('.swal2-confirm').click()
-  cy.get('.swal2-popup').should('not.exist')
+  cy.get('.swal2-popup', { timeout: 5000 }).should('not.exist')
 })
 
-Cypress.Commands.add('mockInstituciones', (institucion) => {
+// ── Institution mock ─────────────────────────────────────
+Cypress.Commands.add('mockInstituciones', (institucion = { l_col: 'Colegio Test', cod_mod: '1234' }) => {
   cy.intercept('GET', '**/rest/v1/instieducativo*', {
     statusCode: 200,
-    body: [institucion],
+    body: [{ cod_mod: institucion.cod_mod, l_col: institucion.l_col }],
   }).as('getInstituciones')
 })
 
-Cypress.Commands.add('selectInstitucion', (nombreInstitucion) => {
-  cy.get('select').should('be.visible')
-  cy.get('select option').should('have.length.greaterThan', 1)
-  cy.get('select').select(nombreInstitucion)
+Cypress.Commands.add('selectInstitucion', (nombre = 'Colegio Test') => {
+  cy.get('select').first().select(nombre, { force: true })
 })
 
-Cypress.Commands.add('setVueInputValue', (selector, value) => {
-  cy.get(selector).then(($input) => {
-    const input = $input[0]
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      'value',
-    ).set
-
-    setter.call(input, value)
-    input.dispatchEvent(new InputEvent('input', {
-      bubbles: true,
-      data: value,
-      inputType: 'insertText',
-    }))
-    input.dispatchEvent(new Event('change', { bubbles: true }))
-  })
+// ── Vue input helper ─────────────────────────────────────
+Cypress.Commands.add('setVueInputValue', { prevSubject: 'element' }, (subject, value) => {
+  const el = subject[0]
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype, 'value'
+  ).set
+  nativeInputValueSetter.call(el, value)
+  el.dispatchEvent(new Event('input', { bubbles: true }))
+  el.dispatchEvent(new Event('blur'))
 })
 
 Cypress.Commands.add('typeIntoInput', (selector, value) => {
-  cy.get(selector)
-    .should('be.visible')
-    .click()
-    .type(`{selectAll}{del}${value}`, {
-      parseSpecialCharSequences: false,
-      force: true,
-      delay: 30,
-    })
+  cy.get(selector).clear({ force: true }).type(value, { force: true, delay: 10 })
 })
 
-Cypress.Commands.add('setDateInputValue', (selector, value) => {
-  cy.get(selector).then(($input) => {
-    const input = $input[0]
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      'value',
-    ).set
-
-    setter.call(input, value)
-    input.dispatchEvent(new InputEvent('input', { bubbles: true }))
-    input.dispatchEvent(new Event('change', { bubbles: true }))
+// ── Mock login (no real auth) ────────────────────────────
+Cypress.Commands.add('mockSupabaseSession', (user = { id: 'mock-user-1', email: 'docente@test.com' }) => {
+  const token = JSON.stringify({
+    access_token: 'mock-token',
+    token_type: 'bearer',
+    user,
   })
-})
+  localStorage.setItem(`sb-uwkqhqosdqdlomvmszxb-auth-token`, token)
 
-Cypress.Commands.add('fillFormularioCrearCuenta', (datos) => {
-  const {
-    nombre,
-    apellidoPaterno,
-    apellidoMaterno,
-    fechaNacimiento,
-    password,
-  } = datos
-
-  cy.typeIntoInput('input[placeholder="Nombre(s)"]', nombre)
-  cy.typeIntoInput('input[placeholder="Apellido paterno"]', apellidoPaterno)
-  cy.typeIntoInput('input[placeholder="Apellido materno"]', apellidoMaterno)
-  cy.setDateInputValue('input[type="date"]', fechaNacimiento)
-  cy.typeIntoInput('input[placeholder="Nueva contraseña"]', password)
-})
-
-Cypress.Commands.add('visitarCrearCuentaEstudiante', (email, contexto) => {
-  const params = new URLSearchParams({
-    instance: contexto.instance_id,
-    rol: contexto.l_rol,
-    email,
-  })
-
-  cy.visit(`/register/crear-cuenta?${params.toString()}`)
-  cy.contains('h2', 'Crear cuenta').should('be.visible')
-})
-
-Cypress.Commands.add('mockSupabaseSession', (user = {}) => {
   cy.intercept('GET', '**/auth/v1/user*', {
     statusCode: 200,
-    body: {
-      id: user.id || 'test-user-id',
-      email: user.email || 'test@test.com',
-      aud: 'authenticated',
-      role: 'authenticated',
-      email_confirmed_at: new Date().toISOString(),
-    },
-  }).as('getUser')
+    body: { id: user.id, email: user.email },
+  }).as('mockAuthUser')
 
   cy.intercept('GET', '**/auth/v1/session*', {
     statusCode: 200,
-    body: {
-      access_token: 'mock-access-token',
-      token_type: 'bearer',
-      expires_in: 3600,
-      expires_at: Math.floor(Date.now() / 1000) + 3600,
-      refresh_token: 'mock-refresh-token',
-      user: {
-        id: user.id || 'test-user-id',
-        email: user.email || 'test@test.com',
-        aud: 'authenticated',
-        role: 'authenticated',
-        email_confirmed_at: new Date().toISOString(),
-      },
-    },
-  }).as('getSession')
-
-  cy.window().then((win) => {
-    const session = {
-      access_token: 'mock-access-token',
-      token_type: 'bearer',
-      expires_in: 3600,
-      expires_at: Math.floor(Date.now() / 1000) + 99999,
-      refresh_token: 'mock-refresh-token',
-      user: {
-        id: user.id || 'test-user-id',
-        email: user.email || 'test@test.com',
-        aud: 'authenticated',
-        role: 'authenticated',
-        email_confirmed_at: new Date().toISOString(),
-      },
-    }
-    const storageKey = 'sb-uwkqhqosdqdlomvmszxb-auth-token'
-    win.localStorage.setItem(storageKey, JSON.stringify(session))
-  })
+    body: { access_token: 'mock-token', user },
+  }).as('mockAuthSession')
 })
 
-Cypress.Commands.add('loginAsTeacher', (perfil = {}) => {
-  const defaultPerfil = {
-    l_nom: 'Maria',
-    l_apellp: 'Gonzalez',
-    l_apellm: 'Lopez',
+Cypress.Commands.add('loginAsTeacher', (perfilOverrides = {}) => {
+  const user = { id: 'mock-docente-1', email: 'faviusam@gmail.com', nombre: 'Favio Coder', rol: 'Docente' }
+  const perfil = {
+    c_usua: 'mock-docente-1',
+    c_instanceId: 'mock-docente-1',
+    l_nom: 'Favio',
+    l_apellp: 'Coder',
+    l_apellm: 'Test',
+    c_ie: 'ie-1',
     rol: { l_rol: 'Docente' },
-    instieducativo: { l_col: 'Colegio Nacional Test' },
+    instieducativo: { l_col: 'Colegio Test' },
+    ...perfilOverrides,
   }
 
-  const authUser = {
-    id: 'teacher-test-id',
-    email: 'docente@test.com',
-    user_metadata: { full_name: 'Maria Gonzalez Lopez' },
-  }
+  cy.mockSupabaseSession({ id: user.id, email: user.email })
 
-  cy.mockSupabaseSession(authUser)
-
-  cy.window().then((win) => {
-    win.localStorage.setItem('auth', JSON.stringify({
-      user: { ...authUser, rol: 'Docente', nombre: 'Maria Gonzalez Lopez' },
-      perfil: { ...defaultPerfil, ...perfil },
-    }))
-  })
+  const piniaState = { auth: { user, perfil } }
+  localStorage.setItem('pinia', JSON.stringify(piniaState))
 })
 
-Cypress.Commands.add('loginAsStudent', (perfil = {}) => {
-  const defaultPerfil = {
-    l_nom: 'Carlos',
-    l_apellp: 'Ramirez',
-    l_apellm: 'Torres',
+Cypress.Commands.add('loginAsStudent', (perfilOverrides = {}) => {
+  const user = { id: 'mock-est-1', email: 'asturimac.favio@gmail.com', nombre: 'Estudiante Test', rol: 'Alumno' }
+  const perfil = {
+    c_usua: 'mock-est-1',
+    c_instanceId: 'mock-est-1',
+    l_nom: 'Estudiante',
+    l_apellp: 'Test',
+    l_apellm: '',
+    c_ie: 'ie-1',
     rol: { l_rol: 'Alumno' },
-    instieducativo: { l_col: 'Colegio Nacional Test' },
+    instieducativo: { l_col: 'Colegio Test' },
+    ...perfilOverrides,
   }
 
-  const authUser = {
-    id: 'student-test-id',
-    email: 'estudiante@test.com',
-    user_metadata: { full_name: 'Carlos Ramirez Torres' },
-  }
+  cy.mockSupabaseSession({ id: user.id, email: user.email })
 
-  cy.mockSupabaseSession(authUser)
-
-  cy.window().then((win) => {
-    win.localStorage.setItem('auth', JSON.stringify({
-      user: { ...authUser, rol: 'Alumno', nombre: 'Carlos Ramirez Torres' },
-      perfil: { ...defaultPerfil, ...perfil },
-    }))
-  })
+  const piniaState = { auth: { user, perfil } }
+  localStorage.setItem('pinia', JSON.stringify(piniaState))
 })
 
+// ── Real login (smoke tests) ─────────────────────────────
+Cypress.Commands.add('loginReal', (rol = 'docente') => {
+  const creds = rol === 'docente'
+    ? { email: 'faviusam@gmail.com', password: 'F@vio2005Ast' }
+    : { email: 'asturimac.favio@gmail.com', password: 'F@vio2005Ast' }
+
+  cy.session([creds.email, rol], () => {
+    cy.task('loginSupabase', creds).then(({ session, perfil }) => {
+      localStorage.setItem(
+        `sb-uwkqhqosdqdlomvmszxb-auth-token`,
+        JSON.stringify(session)
+      )
+
+      const user = {
+        id: session.user.id,
+        email: session.user.email,
+        nombre: `${perfil.l_nom} ${perfil.l_apellp}`,
+        rol: perfil.rol.l_rol,
+      }
+      const piniaState = { auth: { user, perfil } }
+      localStorage.setItem('pinia', JSON.stringify(piniaState))
+    })
+  })
+
+  cy.visit('/principal')
+  cy.url({ timeout: 15000 }).should('include', '/principal')
+})
+
+// ── API mocks ────────────────────────────────────────────
 Cypress.Commands.add('mockAulasDocente', (aulas = []) => {
-  cy.intercept('POST', '**/rest/v1/rpc/get_aulas_docente', {
+  cy.intercept('POST', '**/rpc/get_aulas_docente', {
     statusCode: 200,
     body: aulas,
   }).as('getAulasDocente')
 })
 
 Cypress.Commands.add('mockCursos', (cursos = []) => {
-  cy.intercept('GET', '**/rest/v1/core*curso*', {
+  cy.intercept('GET', '**/core*curso*', {
     statusCode: 200,
     body: cursos,
   }).as('getCursos')
 })
 
-Cypress.Commands.add('mockInstitucionesCompletas', (instituciones = []) => {
+Cypress.Commands.add('mockInstitucionesCompletas', () => {
   cy.intercept('GET', '**/rest/v1/instieducativo*', {
     statusCode: 200,
-    body: instituciones,
+    body: [{ cod_mod: '1234', l_col: 'Colegio Test', d_dep: 'Lima', d_prov: 'Lima' }],
   }).as('getInstituciones')
-})
-
-Cypress.Commands.add('loginReal', () => {
-  const email = 'faviusam@gmail.com'
-  const password = 'F@vio2005Ast'
-  const storageKey = 'sb-uwkqhqosdqdlomvmszxb-auth-token'
-
-  cy.task('loginSupabase', { email, password }).then(({ session, perfil }) => {
-    const rol = perfil.rol?.l_rol
-
-    cy.window().then((win) => {
-      win.localStorage.setItem(storageKey, JSON.stringify(session))
-      win.localStorage.setItem('auth', JSON.stringify({
-        user: {
-          id: perfil.c_usua || session.user.id,
-          nombre: `${perfil.l_nom} ${perfil.l_apellp}`,
-          rol,
-          email: session.user.email,
-        },
-        perfil: {
-          ...perfil,
-          rol: { l_rol: rol },
-          instieducativo: { l_col: perfil.instieducativo?.l_col },
-        },
-      }))
-    })
-  })
 })

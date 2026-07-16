@@ -1,0 +1,144 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-07-16T06:57:24.878Z",
+    "end": "2026-07-16T06:57:25.010Z",
+    "duration": 132,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "cfe108d2-74cf-4866-9b5b-9ba25aa28528",
+      "title": "",
+      "fullFile": "cypress/component/PasswordStrength.cy.js",
+      "file": "cypress/component/PasswordStrength.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "6596b0b0-c25e-4a60-a389-043ff2309ba9",
+          "title": "PasswordStrength Component",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Valida contraseña débil \"hola\" — pasa 0..2/7",
+              "fullTitle": "PasswordStrength Component Valida contraseña débil \"hola\" — pasa 0..2/7",
+              "timedOut": null,
+              "duration": 33,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const pwd = 'hola'\nlet score = 0\nif (pwd.length >= 6) score++\nif (/[a-z]/.test(pwd)) score++\nif (/[A-Z]/.test(pwd)) score++\nif (/\\d/.test(pwd)) score++\nif (/[^a-zA-Z0-9]/.test(pwd)) score++\nif (/\\s/.test(pwd)) score++\nif (/123|abc|qwerty|password/i.test(pwd)) score++\nexpect(score).to.be.lessThan(3)",
+              "err": {},
+              "uuid": "1781db2c-aa9d-4290-a613-156710f03fd2",
+              "parentUUID": "6596b0b0-c25e-4a60-a389-043ff2309ba9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Valida contraseña fuerte \"Abcd1234!\" — pasa 5..7/7",
+              "fullTitle": "PasswordStrength Component Valida contraseña fuerte \"Abcd1234!\" — pasa 5..7/7",
+              "timedOut": null,
+              "duration": 20,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const pwd = 'Abcd1234!'\nlet score = 0\nif (pwd.length >= 6) score++\nif (/[a-z]/.test(pwd)) score++\nif (/[A-Z]/.test(pwd)) score++\nif (/\\d/.test(pwd)) score++\nif (/[^a-zA-Z0-9]/.test(pwd)) score++\nif (/\\s/.test(pwd)) score++\nif (/123|abc|qwerty|password/i.test(pwd)) score++\nexpect(score).to.be.at.least(5)",
+              "err": {},
+              "uuid": "8ed3d66a-0661-4bd4-a6dd-a97ccd4b1a80",
+              "parentUUID": "6596b0b0-c25e-4a60-a389-043ff2309ba9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Valida que la barra de fortaleza se renderiza",
+              "fullTitle": "PasswordStrength Component Valida que la barra de fortaleza se renderiza",
+              "timedOut": null,
+              "duration": 45,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "document.body.innerHTML = `\n  <div class=\"password-strength\">\n    <div class=\"strength-bar\" style=\"height: 8px; background: #e5e7eb;\">\n      <div class=\"strength-fill\" style=\"width: 100%; height: 8px; background: #22c55e;\"></div>\n    </div>\n    <p class=\"strength-text\">Fuerte</p>\n  </div>\n`\ncy.get('.strength-fill').should('exist')\ncy.contains('Fuerte').should('be.visible')",
+              "err": {},
+              "uuid": "3544ac12-e0c2-4ff4-a5c0-a9b963b33999",
+              "parentUUID": "6596b0b0-c25e-4a60-a389-043ff2309ba9",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "1781db2c-aa9d-4290-a613-156710f03fd2",
+            "8ed3d66a-0661-4bd4-a6dd-a97ccd4b1a80",
+            "3544ac12-e0c2-4ff4-a5c0-a9b963b33999"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 98,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 0,
+    "pending": 0,
+    "failures": 2,
+    "start": "2026-07-16T06:54:23.400Z",
+    "end": "2026-07-16T06:54:44.049Z",
+    "duration": 20649,
+    "testsRegistered": 2,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "93b9b28d-ed73-42cb-994f-2bb8e0dc343d",
+      "title": "",
+      "fullFile": "cypress/component/LoginForm.cy.js",
+      "file": "cypress/component/LoginForm.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "61ddb96d-93f9-4014-8c14-d0d3c363c22a",
+          "title": "LoginForm Component",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Renderiza inputs de email y password",
+              "fullTitle": "LoginForm Component Renderiza inputs de email y password",
+              "timedOut": null,
+              "duration": 10287,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "mount({\n  template: `\n    <form>\n      <input type=\"email\" placeholder=\"Correo electrónico\" data-test=\"email\" />\n      <input type=\"password\" placeholder=\"Contraseña\" data-test=\"password\" />\n      <button type=\"submit\">Ingresar</button>\n    </form>\n  `,\n})\ncy.get('[data-test=\"email\"]').should('be.visible')\ncy.get('[data-test=\"password\"]').should('be.visible')\ncy.contains('Ingresar').should('be.visible')",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `[data-test=\"email\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `[data-test=\"email\"]`, but never found it.\n    at Context.<anonymous> (/home/favio-coder/KoEduko/Frontend/cypress/component/LoginForm.cy.js:14:34)",
+                "diff": null
+              },
+              "uuid": "d9ef407f-8b02-451c-a36c-70ad03e351fc",
+              "parentUUID": "61ddb96d-93f9-4014-8c14-d0d3c363c22a",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Toggle password show/hide cambia el type del input",
+              "fullTitle": "LoginForm Component Toggle password show/hide cambia el type del input",
+              "timedOut": null,
+              "duration": 10263,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "mount({\n  template: `\n    <div>\n      <input :type=\"show ? 'text' : 'password'\" data-test=\"password\" />\n      <button @click=\"show = !show\" data-test=\"toggle\">\n        {{ show ? 'Ocultar' : 'Mostrar' }}\n      </button>\n    </div>\n  `,\n  setup() {\n    return { show: false }\n  },\n})\ncy.get('[data-test=\"password\"]').should('have.attr', 'type', 'password')\ncy.get('[data-test=\"toggle\"]').click()\ncy.get('[data-test=\"password\"]').should('have.attr', 'type', 'text')",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `[data-test=\"password\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `[data-test=\"password\"]`, but never found it.\n    at Context.<anonymous> (/home/favio-coder/KoEduko/Frontend/cypress/component/LoginForm.cy.js:33:37)",
+                "diff": null
+              },
+              "uuid": "b0a5cd2b-d90a-4411-9abd-6f8ae4305424",
+              "parentUUID": "61ddb96d-93f9-4014-8c14-d0d3c363c22a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "d9ef407f-8b02-451c-a36c-70ad03e351fc",
+            "b0a5cd2b-d90a-4411-9abd-6f8ae4305424"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 20550,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

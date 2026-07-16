@@ -1,0 +1,125 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-07-16T06:57:18.778Z",
+    "end": "2026-07-16T06:57:18.857Z",
+    "duration": 79,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "80a4d990-ef6b-4828-a241-9db95b47d342",
+      "title": "",
+      "fullFile": "cypress/component/KpiCard.cy.js",
+      "file": "cypress/component/KpiCard.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "9054cbaf-0649-41b9-ad3f-e1d0c3904d0c",
+          "title": "KpiCard Component",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Renderiza tarjeta con título y valor",
+              "fullTitle": "KpiCard Component Renderiza tarjeta con título y valor",
+              "timedOut": null,
+              "duration": 40,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "document.body.innerHTML = `\n  <div class=\"kpi-card\">\n    <p class=\"kpi-title\">Total Alumnos</p>\n    <p class=\"kpi-value\">42</p>\n  </div>\n`\ncy.contains('Total Alumnos').should('be.visible')\ncy.contains('42').should('be.visible')",
+              "err": {},
+              "uuid": "f793593a-3eb6-4e41-bff2-0fce394c5370",
+              "parentUUID": "9054cbaf-0649-41b9-ad3f-e1d0c3904d0c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Renderiza tarjeta con valor 0 correctamente",
+              "fullTitle": "KpiCard Component Renderiza tarjeta con valor 0 correctamente",
+              "timedOut": null,
+              "duration": 18,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "document.body.innerHTML = `\n  <div class=\"kpi-card\">\n    <p class=\"kpi-title\">Promedio General</p>\n    <p class=\"kpi-value\">0</p>\n  </div>\n`\ncy.contains('Promedio General').should('be.visible')\ncy.contains('0').should('be.visible')",
+              "err": {},
+              "uuid": "149b89ad-b1b8-454a-965f-4c25a8ce66ae",
+              "parentUUID": "9054cbaf-0649-41b9-ad3f-e1d0c3904d0c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f793593a-3eb6-4e41-bff2-0fce394c5370",
+            "149b89ad-b1b8-454a-965f-4c25a8ce66ae"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 58,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

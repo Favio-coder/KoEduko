@@ -1,0 +1,133 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 0,
+    "pending": 0,
+    "failures": 2,
+    "start": "2026-07-16T06:55:11.394Z",
+    "end": "2026-07-16T06:55:31.799Z",
+    "duration": 20405,
+    "testsRegistered": 2,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "109bd3b1-c4d8-4116-8702-4ea233d85439",
+      "title": "",
+      "fullFile": "cypress/component/KpiCard.cy.js",
+      "file": "cypress/component/KpiCard.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e8703dca-5cb8-4006-8aa8-7e5f7f26ec05",
+          "title": "KpiCard Component",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Renderiza tarjeta con título y valor",
+              "fullTitle": "KpiCard Component Renderiza tarjeta con título y valor",
+              "timedOut": null,
+              "duration": 10182,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "mount({\n  template: `\n    <div class=\"bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white shadow-lg\">\n      <p class=\"text-blue-100 text-xs uppercase tracking-wider\">Total Alumnos</p>\n      <p class=\"text-3xl font-bold mt-1\">42</p>\n    </div>\n  `,\n})\ncy.contains('Total Alumnos').should('be.visible')\ncy.contains('42').should('be.visible')",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Total Alumnos' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Total Alumnos' but never did.\n    at Context.<anonymous> (/home/favio-coder/KoEduko/Frontend/cypress/component/KpiCard.cy.js:13:33)",
+                "diff": null
+              },
+              "uuid": "dabc52d5-21fd-4aeb-b065-8c184e42d0bf",
+              "parentUUID": "e8703dca-5cb8-4006-8aa8-7e5f7f26ec05",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Renderiza tarjeta con valor 0 correctamente",
+              "fullTitle": "KpiCard Component Renderiza tarjeta con valor 0 correctamente",
+              "timedOut": null,
+              "duration": 10170,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "mount({\n  template: `\n    <div class=\"bg-linear-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg\">\n      <p class=\"text-emerald-100 text-xs uppercase tracking-wider\">Promedio General</p>\n      <p class=\"text-3xl font-bold mt-1\">0</p>\n    </div>\n  `,\n})\ncy.contains('Promedio General').should('be.visible')\ncy.contains('0').should('be.visible')",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedio General' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedio General' but never did.\n    at Context.<anonymous> (/home/favio-coder/KoEduko/Frontend/cypress/component/KpiCard.cy.js:26:36)",
+                "diff": null
+              },
+              "uuid": "070f0331-aedb-403b-a645-e39b3e1c1afc",
+              "parentUUID": "e8703dca-5cb8-4006-8aa8-7e5f7f26ec05",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "dabc52d5-21fd-4aeb-b065-8c184e42d0bf",
+            "070f0331-aedb-403b-a645-e39b3e1c1afc"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 20352,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

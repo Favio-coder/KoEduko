@@ -1,0 +1,149 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 2,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-07-16T06:54:47.211Z",
+    "end": "2026-07-16T06:54:47.463Z",
+    "duration": 252,
+    "testsRegistered": 3,
+    "passPercent": 66.66666666666666,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "25ace4c5-44a2-4c23-a93a-255086a392c6",
+      "title": "",
+      "fullFile": "cypress/component/PasswordStrength.cy.js",
+      "file": "cypress/component/PasswordStrength.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "8d7b43bf-3909-4240-ac67-39dfbeb1a919",
+          "title": "PasswordStrength Component",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Valida contraseña correcta F@vio2005Ast — pasa 7/7",
+              "fullTitle": "PasswordStrength Component Valida contraseña correcta F@vio2005Ast — pasa 7/7",
+              "timedOut": null,
+              "duration": 28,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const pw = 'F@vio2005Ast'\nconst passed = rules.filter(r => r.test(pw)).length\nexpect(passed).to.equal(7)",
+              "err": {},
+              "uuid": "1ea5262b-6527-4074-bc5a-eb2f1c423c77",
+              "parentUUID": "8d7b43bf-3909-4240-ac67-39dfbeb1a919",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Valida contraseña débil \"hola\" — pasa 0/7",
+              "fullTitle": "PasswordStrength Component Valida contraseña débil \"hola\" — pasa 0/7",
+              "timedOut": null,
+              "duration": 134,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const pw = 'hola'\nconst passed = rules.filter(r => r.test(pw)).length\nexpect(passed).to.be.lessThan(3)",
+              "err": {
+                "message": "AssertionError: expected 3 to be below 3",
+                "estack": "AssertionError: expected 3 to be below 3\n    at Context.<anonymous> (/home/favio-coder/KoEduko/Frontend/cypress/component/PasswordStrength.cy.js:21:25)",
+                "diff": ""
+              },
+              "uuid": "7c9f581c-3703-4fa6-bae3-c2289a10eca5",
+              "parentUUID": "8d7b43bf-3909-4240-ac67-39dfbeb1a919",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Valida contraseña sin especial falla",
+              "fullTitle": "PasswordStrength Component Valida contraseña sin especial falla",
+              "timedOut": null,
+              "duration": 28,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const pw = 'Favio2005Ast'\nconst specialRule = rules.find(r => r.label === 'Caracter especial')\nexpect(specialRule.test(pw)).to.be.false",
+              "err": {},
+              "uuid": "4034c11f-f4e3-44a0-b312-a4d4890ba2d3",
+              "parentUUID": "8d7b43bf-3909-4240-ac67-39dfbeb1a919",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "1ea5262b-6527-4074-bc5a-eb2f1c423c77",
+            "4034c11f-f4e3-44a0-b312-a4d4890ba2d3"
+          ],
+          "failures": [
+            "7c9f581c-3703-4fa6-bae3-c2289a10eca5"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 190,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

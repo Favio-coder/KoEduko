@@ -8,8 +8,15 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "lint": "nuxi typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "cypress:run:report": "cypress run --reporter mochawesome",
+    "test:all": "npm run test:coverage && npm run cypress:run:report"
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
@@ -35,6 +42,14 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "cypress": "^15.17.0"
+    "@cypress/code-coverage": "^4.0.3",
+    "@nuxt/test-utils": "^4.0.3",
+    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/ui": "^4.1.10",
+    "@vue/test-utils": "^2.4.11",
+    "cypress": "^15.17.0",
+    "cypress-mochawesome-reporter": "^4.0.2",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.10"
   }
 }

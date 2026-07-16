@@ -1,0 +1,156 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 0,
+    "pending": 0,
+    "failures": 3,
+    "start": "2026-07-16T07:00:24.725Z",
+    "end": "2026-07-16T07:00:55.832Z",
+    "duration": 31107,
+    "testsRegistered": 3,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "f2c9254a-de8a-4815-8b25-9c98002297a1",
+      "title": "",
+      "fullFile": "cypress/e2e/principal/resumen-general.cy.js",
+      "file": "cypress/e2e/principal/resumen-general.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "58137cc3-0166-41d4-ad1b-33d31284493b",
+          "title": "Resumen General",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "CDS-RES-01: Muestra tabla con Total Alumnos",
+              "fullTitle": "Resumen General CDS-RES-01: Muestra tabla con Total Alumnos",
+              "timedOut": null,
+              "duration": 10375,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Total Alumnos').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Total Alumnos' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Total Alumnos' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/resumen-general.cy.js:9:33)",
+                "diff": null
+              },
+              "uuid": "90ddf4b7-8002-4dbb-8b25-d4832dbf09c5",
+              "parentUUID": "58137cc3-0166-41d4-ad1b-33d31284493b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-RES-02: Muestra Promedio General en la tabla",
+              "fullTitle": "Resumen General CDS-RES-02: Muestra Promedio General en la tabla",
+              "timedOut": null,
+              "duration": 10313,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Promedio General').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedio General' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedio General' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/resumen-general.cy.js:13:36)",
+                "diff": null
+              },
+              "uuid": "53cc335a-204b-418a-8dce-3b8643bfb260",
+              "parentUUID": "58137cc3-0166-41d4-ad1b-33d31284493b",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-RES-03: Muestra Tasa de Aprobación",
+              "fullTitle": "Resumen General CDS-RES-03: Muestra Tasa de Aprobación",
+              "timedOut": null,
+              "duration": 10284,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Tasa de Aprobación').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Tasa de Aprobación' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Tasa de Aprobación' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/resumen-general.cy.js:17:38)",
+                "diff": null
+              },
+              "uuid": "5b12596e-a3e9-42c1-b970-6d45318acabc",
+              "parentUUID": "58137cc3-0166-41d4-ad1b-33d31284493b",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "90ddf4b7-8002-4dbb-8b25-d4832dbf09c5",
+            "53cc335a-204b-418a-8dce-3b8643bfb260",
+            "5b12596e-a3e9-42c1-b970-6d45318acabc"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 30972,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

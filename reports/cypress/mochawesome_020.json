@@ -1,0 +1,156 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 0,
+    "pending": 0,
+    "failures": 3,
+    "start": "2026-07-16T06:59:51.269Z",
+    "end": "2026-07-16T07:00:22.383Z",
+    "duration": 31114,
+    "testsRegistered": 3,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "cecfb21f-9543-46c3-9197-9a29f4b36d29",
+      "title": "",
+      "fullFile": "cypress/e2e/principal/graficos.cy.js",
+      "file": "cypress/e2e/principal/graficos.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1049c90c-22df-4309-9048-cd575962c4c7",
+          "title": "Gráficos del Dashboard",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "CDS-GRAF-01: Renderiza canvas de Rendimiento por Alumno",
+              "fullTitle": "Gráficos del Dashboard CDS-GRAF-01: Renderiza canvas de Rendimiento por Alumno",
+              "timedOut": null,
+              "duration": 10340,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('canvas').should('have.length.at.least', 1);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `canvas`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `canvas`, but never found it.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/graficos.cy.js:9:21)",
+                "diff": null
+              },
+              "uuid": "ef69c4b6-b7ee-495c-94eb-73aa586510ca",
+              "parentUUID": "1049c90c-22df-4309-9048-cd575962c4c7",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-GRAF-02: Renderiza sección de Resumen General",
+              "fullTitle": "Gráficos del Dashboard CDS-GRAF-02: Renderiza sección de Resumen General",
+              "timedOut": null,
+              "duration": 10312,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Resumen General').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Resumen General' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Resumen General' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/graficos.cy.js:13:35)",
+                "diff": null
+              },
+              "uuid": "de111592-dc67-42b5-9056-e29c444333cf",
+              "parentUUID": "1049c90c-22df-4309-9048-cd575962c4c7",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-GRAF-03: Renderiza sección Promedios por Curso",
+              "fullTitle": "Gráficos del Dashboard CDS-GRAF-03: Renderiza sección Promedios por Curso",
+              "timedOut": null,
+              "duration": 10316,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Promedios por Curso').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedios por Curso' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedios por Curso' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/graficos.cy.js:17:39)",
+                "diff": null
+              },
+              "uuid": "f2ce961a-a4ba-4b2b-ae49-6757c52fe99d",
+              "parentUUID": "1049c90c-22df-4309-9048-cd575962c4c7",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "ef69c4b6-b7ee-495c-94eb-73aa586510ca",
+            "de111592-dc67-42b5-9056-e29c444333cf",
+            "f2ce961a-a4ba-4b2b-ae49-6757c52fe99d"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 30968,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

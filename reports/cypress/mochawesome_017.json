@@ -1,0 +1,110 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-07-16T06:58:49.448Z",
+    "end": "2026-07-16T06:59:01.085Z",
+    "duration": 11637,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b43a7f79-bcef-4fc6-bca1-d2ce71b9d718",
+      "title": "",
+      "fullFile": "cypress/e2e/auth/logout.cy.js",
+      "file": "cypress/e2e/auth/logout.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "ff170d6c-5f32-4f08-9604-76422d8d01b1",
+          "title": "Logout",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Cierra sesión correctamente y redirige al home",
+              "fullTitle": "Logout Cierra sesión correctamente y redirige al home",
+              "timedOut": null,
+              "duration": 11596,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.loginReal('docente');\ncy.visit('/principal');\ncy.url({\n  timeout: 10000\n}).should('include', '/principal');\ncy.contains('Cerrar sesión').click({\n  force: true\n});\ncy.url({\n  timeout: 10000\n}).should('eq', Cypress.config().baseUrl + '/');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Cerrar sesión' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Cerrar sesión' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/auth/logout.cy.js:8:7)",
+                "diff": null
+              },
+              "uuid": "268e990b-2779-48b0-b085-5120031f08a8",
+              "parentUUID": "ff170d6c-5f32-4f08-9604-76422d8d01b1",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "268e990b-2779-48b0-b085-5120031f08a8"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 11596,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

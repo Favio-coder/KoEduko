@@ -1,0 +1,110 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-07-16T06:58:35.953Z",
+    "end": "2026-07-16T06:58:47.069Z",
+    "duration": 11116,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "47496041-8763-4028-94a9-4050f34eafe6",
+      "title": "",
+      "fullFile": "cypress/e2e/auth/login-estudiante.cy.js",
+      "file": "cypress/e2e/auth/login-estudiante.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "87d0bd98-a864-4d6d-830d-c6893545ef1a",
+          "title": "Login Estudiante",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "CDS-T25: Inicia sesión como estudiante y ve su aula asignada",
+              "fullTitle": "Login Estudiante CDS-T25: Inicia sesión como estudiante y ve su aula asignada",
+              "timedOut": null,
+              "duration": 11081,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.loginReal('estudiante');\ncy.get('h1').should('contain', 'Bienvenido');\ncy.contains('Tu aula asignada').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `h1`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find element: `h1`, but never found it.\n    at Context.eval (webpack://frontend/./cypress/e2e/auth/login-estudiante.cy.js:5:17)",
+                "diff": null
+              },
+              "uuid": "548db9dd-239f-46f5-84e8-dbe0b50a84b5",
+              "parentUUID": "87d0bd98-a864-4d6d-830d-c6893545ef1a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "548db9dd-239f-46f5-84e8-dbe0b50a84b5"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 11081,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

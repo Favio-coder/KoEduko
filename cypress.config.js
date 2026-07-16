@@ -2,11 +2,20 @@ import { defineConfig } from "cypress";
 import { createClient } from "@supabase/supabase-js";
 
 export default defineConfig({
-  allowCypressEnv: false,
   defaultCommandTimeout: 10000,
   pageLoadTimeout: 60000,
   viewportWidth: 1280,
   viewportHeight: 720,
+  video: true,
+  screenshotOnRunFailure: true,
+  reporter: 'mochawesome',
+  reporterOptions: {
+    reportDir: 'reports/cypress',
+    overwrite: false,
+    html: true,
+    json: true,
+    charts: true,
+  },
 
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL || "http://localhost:3000",
@@ -51,5 +60,6 @@ export default defineConfig({
       framework: "vue",
       bundler: "vite",
     },
+    specPattern: "cypress/component/**/*.cy.{js,jsx,ts,tsx}",
   },
 });

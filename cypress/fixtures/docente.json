@@ -1,24 +1,6 @@
 {
-  "institucion": {
-    "c_ie": "12345678",
-    "l_col": "Colegio Nacional Test"
-  },
-  "docente": {
-    "email": "docente.nuevo@test.com",
-    "emailInvalido": "correo-sin-formato",
-    "emailDuplicado": "docente.existente@test.com",
-    "nombre": "Maria",
-    "apellidoPaterno": "Gonzalez",
-    "apellidoMaterno": "Lopez",
-    "fechaNacimiento": "1985-03-20",
-    "passwordFuerte": "DocenteSegura1!X",
-    "passwordDebil": "123456",
-    "nombreNoAlfanumerico": "Maria@#!",
-    "apellidoPaternoNoAlfanumerico": "Gonzalez$%",
-    "apellidoMaternoNoAlfanumerico": "Lopez&*"
-  },
-  "contexto": {
-    "instance_id": "inst-test-002",
-    "l_rol": "Docente"
-  }
+  "email": "faviusam@gmail.com",
+  "password": "F@vio2005Ast",
+  "nombre": "Favio",
+  "apellido": "Coder"
 }

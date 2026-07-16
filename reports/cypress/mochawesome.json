@@ -1,0 +1,149 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 2,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-07-16T06:56:46.291Z",
+    "end": "2026-07-16T06:56:56.614Z",
+    "duration": 10323,
+    "testsRegistered": 3,
+    "passPercent": 66.66666666666666,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "85a90acf-902a-4024-aa98-3572506a1e63",
+      "title": "",
+      "fullFile": "cypress/component/PasswordStrength.cy.js",
+      "file": "cypress/component/PasswordStrength.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "fb58fd0b-dc76-4169-af3e-2c44e7e83831",
+          "title": "PasswordStrength Component",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Valida contraseña débil \"hola\" — pasa 0..2/7",
+              "fullTitle": "PasswordStrength Component Valida contraseña débil \"hola\" — pasa 0..2/7",
+              "timedOut": null,
+              "duration": 41,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const pwd = 'hola'\nlet score = 0\nif (pwd.length >= 6) score++\nif (/[a-z]/.test(pwd)) score++\nif (/[A-Z]/.test(pwd)) score++\nif (/\\d/.test(pwd)) score++\nif (/[^a-zA-Z0-9]/.test(pwd)) score++\nif (/\\s/.test(pwd)) score++\nif (/123|abc|qwerty|password/i.test(pwd)) score++\nexpect(score).to.be.lessThan(3)",
+              "err": {},
+              "uuid": "8765492c-1cdc-48ee-b055-d6726ff2aeba",
+              "parentUUID": "fb58fd0b-dc76-4169-af3e-2c44e7e83831",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Valida contraseña fuerte \"Abcd1234!\" — pasa 5..7/7",
+              "fullTitle": "PasswordStrength Component Valida contraseña fuerte \"Abcd1234!\" — pasa 5..7/7",
+              "timedOut": null,
+              "duration": 23,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const pwd = 'Abcd1234!'\nlet score = 0\nif (pwd.length >= 6) score++\nif (/[a-z]/.test(pwd)) score++\nif (/[A-Z]/.test(pwd)) score++\nif (/\\d/.test(pwd)) score++\nif (/[^a-zA-Z0-9]/.test(pwd)) score++\nif (/\\s/.test(pwd)) score++\nif (/123|abc|qwerty|password/i.test(pwd)) score++\nexpect(score).to.be.at.least(5)",
+              "err": {},
+              "uuid": "e4fd1882-a4d5-4c60-b10b-1b5deef696bf",
+              "parentUUID": "fb58fd0b-dc76-4169-af3e-2c44e7e83831",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Valida que la barra de fortaleza se renderiza",
+              "fullTitle": "PasswordStrength Component Valida que la barra de fortaleza se renderiza",
+              "timedOut": null,
+              "duration": 10192,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "document.body.innerHTML = `\n  <div class=\"password-strength\">\n    <div class=\"strength-bar\">\n      <div class=\"strength-fill\" style=\"width: 100%;\"></div>\n    </div>\n    <p class=\"strength-text\">Fuerte</p>\n  </div>\n`\ncy.get('.strength-bar').should('be.visible')\ncy.contains('Fuerte').should('be.visible')",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: expected '<div.strength-bar>' to be 'visible'\n\nThis element `<div.strength-bar>` is not visible because it has an effective width and height of: `1264 x 0` pixels.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: expected '<div.strength-bar>' to be 'visible'\n\nThis element `<div.strength-bar>` is not visible because it has an effective width and height of: `1264 x 0` pixels.\n    at Context.<anonymous> (/home/favio-coder/KoEduko/Frontend/cypress/component/PasswordStrength.cy.js:39:28)",
+                "diff": null
+              },
+              "uuid": "1da6e57f-8687-40f6-b8cf-b1399f9662df",
+              "parentUUID": "fb58fd0b-dc76-4169-af3e-2c44e7e83831",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "8765492c-1cdc-48ee-b055-d6726ff2aeba",
+            "e4fd1882-a4d5-4c60-b10b-1b5deef696bf"
+          ],
+          "failures": [
+            "1da6e57f-8687-40f6-b8cf-b1399f9662df"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 10256,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": true,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

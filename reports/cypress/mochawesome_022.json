@@ -1,0 +1,130 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 1,
+    "pending": 0,
+    "failures": 1,
+    "start": "2026-07-16T07:00:58.064Z",
+    "end": "2026-07-16T07:01:08.996Z",
+    "duration": 10932,
+    "testsRegistered": 2,
+    "passPercent": 50,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "a0c22a19-a558-42a0-aa9b-8b55548de674",
+      "title": "",
+      "fullFile": "cypress/e2e/principal/selector-grado-aula.cy.js",
+      "file": "cypress/e2e/principal/selector-grado-aula.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "a930e32d-0e52-4520-a91b-1112a0edcbe1",
+          "title": "Selector Grado/Aula",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "CDS-SEL-01: Muestra el selector de espacio",
+              "fullTitle": "Selector Grado/Aula CDS-SEL-01: Muestra el selector de espacio",
+              "timedOut": null,
+              "duration": 10331,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Selecciona tu espacio').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Selecciona tu espacio' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Selecciona tu espacio' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/selector-grado-aula.cy.js:9:41)",
+                "diff": null
+              },
+              "uuid": "9995b36b-c810-406a-b9d1-5076209f176d",
+              "parentUUID": "a930e32d-0e52-4520-a91b-1112a0edcbe1",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-SEL-02: Muestra confirmación cuando grado y aula están seleccionados",
+              "fullTitle": "Selector Grado/Aula CDS-SEL-02: Muestra confirmación cuando grado y aula están seleccionados",
+              "timedOut": null,
+              "duration": 503,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.loginAsTeacher();\ncy.mockAulasDocente([{\n  c_aula: 'a-1',\n  l_aula: 'A',\n  l_desc: null,\n  c_grad: 'g-1',\n  l_grad: '1° Primaria',\n  n_anio: 2026,\n  grado_desc: null\n}]);\ncy.visit('/principal');\ncy.get('body').should('be.visible');",
+              "err": {},
+              "uuid": "f13516f3-b9cf-4a0f-a265-9f306479879a",
+              "parentUUID": "a930e32d-0e52-4520-a91b-1112a0edcbe1",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f13516f3-b9cf-4a0f-a265-9f306479879a"
+          ],
+          "failures": [
+            "9995b36b-c810-406a-b9d1-5076209f176d"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 10834,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

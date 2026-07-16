@@ -1,0 +1,16 @@
+node_modules
+.nuxt
+.output
+coverage
+test-report
+reports
+.git
+.gitignore
+*.md
+.env
+.env.*
+!.env.example
+cypress
+cypress.config.js
+vitest.config.ts
+vite.config.ts

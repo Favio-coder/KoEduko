@@ -1,0 +1,106 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-07-16T06:58:09.296Z",
+    "end": "2026-07-16T06:58:12.525Z",
+    "duration": 3229,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "09a22d47-9601-4180-bbb6-dc4bbee7ccf2",
+      "title": "",
+      "fullFile": "cypress/e2e/actividades/actividades-docente.cy.js",
+      "file": "cypress/e2e/actividades/actividades-docente.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "37829c2e-4696-43de-be2a-36536e9935bd",
+          "title": "Actividades — Docente",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "CDS-ACT-01: Vista docente carga correctamente",
+              "fullTitle": "Actividades — Docente CDS-ACT-01: Vista docente carga correctamente",
+              "timedOut": null,
+              "duration": 3192,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.url().should('include', '/actividades');",
+              "err": {},
+              "uuid": "14465c4d-1608-44b3-b5a6-d42b4283d625",
+              "parentUUID": "37829c2e-4696-43de-be2a-36536e9935bd",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "14465c4d-1608-44b3-b5a6-d42b4283d625"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 3192,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

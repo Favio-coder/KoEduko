@@ -1,0 +1,179 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 0,
+    "pending": 0,
+    "failures": 4,
+    "start": "2026-07-16T06:59:07.667Z",
+    "end": "2026-07-16T06:59:48.982Z",
+    "duration": 41315,
+    "testsRegistered": 4,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "5fb36562-065b-4d3a-a13f-cc7a19719157",
+      "title": "",
+      "fullFile": "cypress/e2e/principal/dashboard-kpis.cy.js",
+      "file": "cypress/e2e/principal/dashboard-kpis.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "44444a1e-793f-4a87-9f87-16a5bb04ea3e",
+          "title": "Dashboard KPIs",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "CDS-KPI-01: Muestra tarjeta Total Alumnos",
+              "fullTitle": "Dashboard KPIs CDS-KPI-01: Muestra tarjeta Total Alumnos",
+              "timedOut": null,
+              "duration": 10336,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Total Alumnos').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Total Alumnos' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Total Alumnos' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/dashboard-kpis.cy.js:20:33)",
+                "diff": null
+              },
+              "uuid": "262cc403-c842-4f30-b7ef-03fa3e9e80fe",
+              "parentUUID": "44444a1e-793f-4a87-9f87-16a5bb04ea3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-KPI-02: Muestra tarjeta Promedio General",
+              "fullTitle": "Dashboard KPIs CDS-KPI-02: Muestra tarjeta Promedio General",
+              "timedOut": null,
+              "duration": 10293,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Promedio General').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedio General' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Promedio General' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/dashboard-kpis.cy.js:24:36)",
+                "diff": null
+              },
+              "uuid": "6b5c4a4d-d085-4823-94df-8893f152de60",
+              "parentUUID": "44444a1e-793f-4a87-9f87-16a5bb04ea3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-KPI-03: Muestra tarjeta Tasa Aprobación",
+              "fullTitle": "Dashboard KPIs CDS-KPI-03: Muestra tarjeta Tasa Aprobación",
+              "timedOut": null,
+              "duration": 10269,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Tasa Aprobación').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Tasa Aprobación' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Tasa Aprobación' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/dashboard-kpis.cy.js:28:35)",
+                "diff": null
+              },
+              "uuid": "8313e1de-68fc-4e15-a140-30457a360ffd",
+              "parentUUID": "44444a1e-793f-4a87-9f87-16a5bb04ea3e",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CDS-KPI-04: Muestra tarjeta Mejor Estudiante",
+              "fullTitle": "Dashboard KPIs CDS-KPI-04: Muestra tarjeta Mejor Estudiante",
+              "timedOut": null,
+              "duration": 10242,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Mejor Estudiante').should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Mejor Estudiante' but never did.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: Expected to find content: 'Mejor Estudiante' but never did.\n    at Context.eval (webpack://frontend/./cypress/e2e/principal/dashboard-kpis.cy.js:32:36)",
+                "diff": null
+              },
+              "uuid": "d8b9c927-636c-4346-9a2b-39844d9e0694",
+              "parentUUID": "44444a1e-793f-4a87-9f87-16a5bb04ea3e",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "262cc403-c842-4f30-b7ef-03fa3e9e80fe",
+            "6b5c4a4d-d085-4823-94df-8893f152de60",
+            "8313e1de-68fc-4e15-a140-30457a360ffd",
+            "d8b9c927-636c-4346-9a2b-39844d9e0694"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 41140,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports/cypress",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "charts": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
