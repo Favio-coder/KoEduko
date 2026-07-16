@@ -96,9 +96,9 @@ export function useActividades() {
         c => c.c_actividad === payload.c_actividad && c.c_usua === payload.c_usua
       )
       if (idx !== -1) {
-        calificaciones.value[idx].nota = payload.nota
-        calificaciones.value[idx].observacion = payload.observacion ?? null
-        calificaciones.value[idx].f_calificado = new Date().toISOString()
+        calificaciones.value[idx]!.nota = payload.nota
+        calificaciones.value[idx]!.observacion = payload.observacion ?? null
+        calificaciones.value[idx]!.f_calificado = new Date().toISOString()
       } else {
         calificaciones.value.push({
           c_calificacion: '',

@@ -251,6 +251,7 @@ import { useAulaStore } from '~/stores/aula'
 import { useCursoStore } from '#imports'
 import { useAtributos } from '~/composable/atributos/useAtributos'
 import { useEvaluacion } from '~/composable/calificaciones/useEvaluacion'
+import type { Estudiante } from '~/services/estudiantes/obtenerEstudiantesAula'
 import { obtenerValoresAtributo } from '~/services/atributos/obtenerValoresAtributo'
 import { guardarValorAtributo } from '~/services/atributos/guardarValorAtributo'
 import * as XLSX from 'xlsx'
@@ -288,7 +289,7 @@ const exportando = ref(false)
 
 async function exportarExcel() {
   mostrarExportMenu.value = false
-  if (!cursoSeleccionadoId.value || atributos.length === 0) return
+  if (!cursoSeleccionadoId.value || atributos.value.length === 0) return
   exportando.value = true
   try {
     const curso = cursos.value.find(c => c.c_curso === cursoSeleccionadoId.value)
@@ -469,7 +470,7 @@ async function onCrearAtributoDesdeImport(nombre: string, peso: number) {
 function onActualizarPesoAtributo(c_atributo: string, peso: number) {
   const idx = atributos.value.findIndex(a => a.c_atributo === c_atributo)
   if (idx !== -1) {
-    atributos.value[idx] = { ...atributos.value[idx], peso }
+    atributos.value[idx] = { ...atributos.value[idx]!, peso }
   }
 }
 

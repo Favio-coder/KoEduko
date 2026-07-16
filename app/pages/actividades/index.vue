@@ -655,7 +655,7 @@ async function init(cursoId: string) {
   await cargarEntregas()
   await cargarNotasEstudiante()
   if (actividades.value.length > 0) {
-    actividadSeleccionada.value = actividades.value[0]
+    actividadSeleccionada.value = actividades.value[0] ?? null
   }
 }
 

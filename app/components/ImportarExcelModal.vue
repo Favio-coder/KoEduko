@@ -26,7 +26,7 @@
             <div v-if="!datosParseados" class="p-6">
               <div
                 class="border-2 border-dashed border-gray-200 rounded-2xl p-12 text-center cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition"
-                @click="$refs.fileInput.click()"
+                @click="fileInput?.click()"
                 @dragover.prevent="dragOver = true"
                 @dragleave="dragOver = false"
                 @drop.prevent="manejarDrop"
@@ -196,14 +196,14 @@ function sugerirNombre(escrito: string): { match: string; razon: string } | null
 function levenshtein(a: string, b: string): number {
   const m = a.length, n = b.length
   const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0))
-  for (let i = 0; i <= m; i++) dp[i][0] = i
-  for (let j = 0; j <= n; j++) dp[0][j] = j
+  for (let i = 0; i <= m; i++) dp[i]![0] = i
+  for (let j = 0; j <= n; j++) dp[0]![j] = j
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
+      dp[i]![j] = a[i - 1] === b[j - 1] ? dp[i - 1]![j - 1]! : Math.min(dp[i - 1]![j]!, dp[i]![j - 1]!, dp[i - 1]![j - 1]!) + 1
     }
   }
-  return dp[m][n]
+  return dp[m]![n]!
 }
 
 // ── File handling ──
@@ -231,8 +231,8 @@ function procesarArchivo(file: File) {
     try {
       const data = new Uint8Array(e.target?.result as ArrayBuffer)
       const workbook = XLSX.read(data, { type: 'array' })
-      const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
-      const json = XLSX.utils.sheet_to_json<any>(firstSheet, { defval: '' })
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]!]
+      const json = XLSX.utils.sheet_to_json<any>(firstSheet!, { defval: '' })
       if (json.length === 0) {
         errorParse.value = 'El archivo está vacío'
         return
@@ -327,7 +327,7 @@ async function preguntarNuevosAtributos(nuevos: string[]) {
   html += `<div class="max-h-60 overflow-y-auto space-y-2">`
 
   for (let i = 0; i < todos.length; i++) {
-    const t = todos[i]
+    const t = todos[i]!
     html += `
       <div class="flex items-center gap-3 p-2 rounded-lg ${t.isNew ? 'bg-emerald-50 border border-emerald-200' : 'bg-gray-50'}">
         <span class="text-xs font-medium text-gray-700 flex-1 ${t.isNew ? 'text-emerald-700' : ''}">
@@ -377,7 +377,7 @@ async function preguntarNuevosAtributos(nuevos: string[]) {
         const input = document.getElementById(`peso_${i}`) as HTMLInputElement
         const val = parseFloat(input?.value)
         if (isNaN(val) || val < 0 || val > 100) {
-          $swal.showValidationMessage(`Peso inválido para "${todos[i].nombre}"`)
+          $swal.showValidationMessage(`Peso inválido para "${todos[i]!.nombre}"`)
           return false
         }
         pesos.push(val)
@@ -397,15 +397,15 @@ async function preguntarNuevosAtributos(nuevos: string[]) {
 
   // Update existing attributes in DB
   for (let i = 0; i < todos.length; i++) {
-    const t = todos[i]
+    const t = todos[i]!
     if (!t.isNew && t.peso !== pesos[i]) {
       try {
         await $supabase
           .schema('core')
           .from('atributo')
-          .update({ peso: pesos[i] })
+          .update({ peso: pesos[i]! })
           .eq('c_atributo', t.c_atributo)
-        emit('actualizarPesoAtributo', t.c_atributo!, pesos[i])
+        emit('actualizarPesoAtributo', t.c_atributo!, pesos[i]!)
       } catch (e: any) {
         console.error('Error updating weight:', e)
       }
@@ -414,9 +414,9 @@ async function preguntarNuevosAtributos(nuevos: string[]) {
 
   // Create new attributes
   for (let i = 0; i < todos.length; i++) {
-    const t = todos[i]
+    const t = todos[i]!
     if (t.isNew) {
-      emit('crearAtributo', t.nombre, pesos[i])
+      emit('crearAtributo', t.nombre, pesos[i]!)
     }
   }
 }
@@ -516,12 +516,12 @@ function inicializarHandsontable() {
         } else {
           // Attribute value changed
           const val = parseFloat(String(newVal ?? '').replace(',', '.'))
-          entry[prop] = isNaN(val) || newVal === '' || newVal === null ? '' : val
+          entry[prop as string] = isNaN(val) || newVal === '' || newVal === null ? '' : val
 
           // Validate range
-          erroresValidacion.value = erroresValidacion.value.filter(e => !(e.fila === row + 2 && e.col === prop))
+          erroresValidacion.value = erroresValidacion.value.filter(e => !(e.fila === row + 2 && e.col === (prop as string)))
           if (val < 0 || val > 20) {
-            erroresValidacion.value.push({ fila: row + 2, col: prop, mensaje: `Valor ${val} fuera de rango (0-20)` })
+            erroresValidacion.value.push({ fila: row + 2, col: prop as string, mensaje: `Valor ${val} fuera de rango (0-20)` })
             filaErrores.value.add(row)
           } else if (entry._c_usua !== null) {
             filaErrores.value.delete(row)
@@ -529,10 +529,11 @@ function inicializarHandsontable() {
         }
       }
     },
-    cells: (row: number) => {
+    cells: (row: number, _column: number, _prop: string | number) => {
       if (filaErrores.value.has(row)) {
         return { className: 'htInvalid' }
       }
+      return {}
     },
   })
 }

@@ -606,7 +606,7 @@ const cargarMetricasBI = async () => {
     let mejorEstudiante = ''
     let mejorPromedio = 0
     const datosRendimiento: { nombre: string; promedio: number }[] = []
-    const distribucionNotas = [0, 0, 0, 0]
+    const distribucionNotas: [number, number, number, number] = [0, 0, 0, 0]
     const promediosCursos: { curso: string; promedio: number; alumnos: number }[] = []
 
     for (const curso of cursos) {
